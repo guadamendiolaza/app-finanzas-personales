@@ -1,0 +1,381 @@
+/* Estilos globales para Finanzas Personales - Diseño responsive */
+
+:root {
+  /* Colores */
+  --bg-top: #eef2ff;
+  --bg-mid: #f1f5f9;
+  --bg-bottom: #ecfeff;
+  --card-bg: rgba(255, 255, 255, 0.82);
+  --border-color: rgba(2, 6, 23, 0.12);
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --brand-primary: #4f46e5;
+  --brand-secondary: #06b6d4;
+  --shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
+}
+
+/* Estilos base */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, var(--bg-top), var(--bg-mid) 40%, var(--bg-bottom));
+  color: var(--text-primary);
+}
+
+/* Navbar responsive */
+.navbar-brand {
+  color: var(--text-primary) !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.user-info img {
+  border-radius: 50%;
+}
+
+/* Navegación tipo pills - Responsive */
+.nav-pills-container {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  padding: 0;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.nav-pill {
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(2, 6, 23, 0.03);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.nav-pill:hover:not(:disabled) {
+  background: rgba(79, 70, 229, 0.06);
+}
+
+.nav-pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nav-pill.active {
+  background: rgba(79, 70, 229, 0.12);
+  border-color: rgba(79, 70, 229, 0.22);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Panel principal - Responsive */
+.main-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  border-radius: 18px;
+  padding: 2rem;
+  margin: 0 0 2rem 0;
+  width: 100%;
+}
+
+/* Overlay de login */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 6, 23, 0.35);
+  backdrop-filter: blur(6px);
+  padding: 1rem;
+}
+
+.login-card {
+  max-width: 420px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  text-align: center;
+}
+
+.login-card h4 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.login-card p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Botones */
+.btn-gradient {
+  background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+  border: none;
+  color: white;
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+  transition: all 0.2s;
+}
+
+.btn-gradient:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.24);
+}
+
+/* Cards de componentes */
+.component-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+/* Tablas responsive */
+.table-responsive-custom {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  background: rgba(2, 6, 23, 0.03);
+  border-bottom: 1px solid rgba(2, 6, 23, 0.1) !important;
+  font-weight: 600;
+}
+
+.table td {
+  border-color: rgba(2, 6, 23, 0.1) !important;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.table-hover tbody tr:hover td {
+  background: rgba(79, 70, 229, 0.06);
+}
+
+/* Inputs */
+.form-control,
+.form-select {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(2, 6, 23, 0.14);
+  color: var(--text-primary);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.16);
+  border-color: rgba(79, 70, 229, 0.42);
+}
+
+.input-group-text {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(2, 6, 23, 0.14) !important;
+  color: var(--text-muted);
+}
+
+/* Utilidades */
+.divider {
+  height: 1px;
+  background: rgba(2, 6, 23, 0.08);
+  margin: 1rem 0;
+}
+
+.tiny {
+  font-size: 0.85rem;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+/* Media Queries para Responsive */
+
+/* Tablets (768px - 991px) */
+@media (max-width: 991px) {
+  .main-card {
+    padding: 1.5rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .user-info {
+    font-size: 0.9rem;
+  }
+
+  .nav-pill {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Móviles (menos de 768px) */
+@media (max-width: 767px) {
+  .main-card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .user-info span {
+    display: none; /* Ocultar nombre en móvil */
+  }
+
+  .nav-pills-container {
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .nav-pill {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .component-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+  }
+
+  h5 {
+    font-size: 1.1rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+}
+
+/* Móviles pequeños (menos de 576px) */
+@media (max-width: 575px) {
+  .main-card {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .login-overlay {
+    padding: 0.5rem;
+  }
+
+  .login-card {
+    padding: 1.25rem;
+  }
+
+  .nav-pill {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .component-card {
+    padding: 0.75rem;
+  }
+
+  .table {
+    font-size: 0.85rem;
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+  }
+
+  .btn-sm {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* Pantallas grandes (más de 1200px) */
+@media (min-width: 1200px) {
+  .main-card {
+    padding: 2.5rem 3rem;
+  }
+
+  .component-card {
+    padding: 2rem;
+  }
+}
+
+/* Pantallas muy grandes (más de 1600px) */
+@media (min-width: 1600px) {
+  .main-card {
+    padding: 3rem 4rem;
+  }
+  
+  .component-card {
+    padding: 2.5rem;
+  }
+}
+
+/* Animaciones suaves */
+.nav-pill,
+.btn,
+.form-control,
+.component-card {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(2, 6, 23, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.5);
+}

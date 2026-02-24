@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finanzas personales</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Mid theme: moderno, con contraste */
+      --bgTop:#eef2ff;     /* indigo-50 */
+      --bgMid:#f1f5f9;     /* slate-100 */
+      --bgBottom:#ecfeff;  /* cyan-50 */
+
+      --card: rgba(255,255,255,.82);
+      --stroke: rgba(2,6,23,.12);
+      --soft: rgba(2,6,23,.08);
+
+      --text: #0f172a;   /* slate-900 */
+      --muted:#475569;   /* slate-600 */
+      --muted2:#64748b;  /* slate-500 */
+
+      --brand1:#4f46e5;  /* indigo-600 */
+      --brand2:#06b6d4;  /* cyan-500 */
+      --brand3:#10b981;  /* emerald-500 */
+      --shadow: 0 10px 26px rgba(15,23,42,.12);
+    }
+
+    body{
+      background:
+        radial-gradient(900px 600px at 12% 10%, rgba(79,70,229,.18), transparent 58%),
+        radial-gradient(900px 520px at 86% 22%, rgba(6,182,212,.14), transparent 58%),
+        radial-gradient(900px 520px at 70% 95%, rgba(16,185,129,.10), transparent 60%),
+        linear-gradient(180deg, var(--bgTop), var(--bgMid) 40%, var(--bgBottom));
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(10px);
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+    }
+
+    .muted{ color: var(--muted) !important; }
+    .tiny{ font-size: .92rem; }
+
+    .pill{
+      border: 1px solid var(--stroke);
+      background: rgba(2,6,23,.03);
+      padding: .35rem .6rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      color: var(--muted);
+    }
+
+    .btn-gradient{
+      background: linear-gradient(90deg, var(--brand1), var(--brand2));
+      border: none;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(79,70,229,.18);
+    }
+    .btn-gradient:hover{ filter: brightness(1.03); }
+
+    .btn-soft{
+      background: rgba(79,70,229,.08);
+      border: 1px solid rgba(79,70,229,.18);
+      color: var(--text);
+    }
+    .btn-soft:hover{ background: rgba(79,70,229,.12); }
+
+    .nav-pills .nav-link{
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: rgba(2,6,23,.03);
+    }
+    .nav-pills .nav-link:hover{ background: rgba(79,70,229,.06); }
+    .nav-pills .nav-link.active{
+      background: rgba(79,70,229,.12);
+      border-color: rgba(79,70,229,.22);
+      color: var(--text);
+      font-weight: 700;
+    }
+    .nav-pills .nav-link.disabled{ opacity: .45; }
+
+    .divider{
+      height: 1px;
+      background: var(--soft);
+      margin: 1rem 0;
+    }
+
+    .form-control, .form-select{
+      background: rgba(255,255,255,.95);
+      border: 1px solid rgba(2,6,23,.14);
+      color: var(--text);
+    }
+    .form-control::placeholder{ color: var(--muted2); }
+    .form-control:focus, .form-select:focus{
+      box-shadow: 0 0 0 .2rem rgba(79,70,229,.16);
+      border-color: rgba(79,70,229,.42);
+    }
+    .input-group-text{
+      background: rgba(255,255,255,.95) !important;
+      border: 1px solid rgba(2,6,23,.14) !important;
+      color: var(--muted);
+    }
+
+    /* Tablas claras */
+    .table thead th{
+      color: var(--muted);
+      font-size: .9rem;
+      background: rgba(2,6,23,.03);
+      border-bottom: 1px solid rgba(2,6,23,.10) !important;
+    }
+    .table td{
+      border-color: rgba(2,6,23,.10) !important;
+      background: rgba(255,255,255,.65);
+    }
+    .table-hover tbody tr:hover td{ background: rgba(79,70,229,.06); }
+
+    /* Empty state center */
+    .empty-state{
+      border: 1px dashed rgba(2,6,23,.22);
+      background: rgba(255,255,255,.55);
+      border-radius: 18px;
+      padding: 1.25rem;
+    }
+
+    /* Locked overlay */
+    .locked-overlay{
+      position: fixed; inset: 0; z-index: 1055;
+      display:none; align-items:center; justify-content:center;
+      padding: 1.25rem;
+      background: rgba(2,6,23,.35);
+      backdrop-filter: blur(6px);
+    }
+    .locked-overlay.show{ display:flex; }
+    .overlay-card{ max-width: 920px; width: 100%; }
+
+    /* Mini feature cards */
+    .feat i{
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      display:grid; place-items:center;
+      border: 1px solid rgba(2,6,23,.10);
+      background: rgba(255,255,255,.70);
+      color: var(--brand1);
+    }
+
+    /* Smooth section spacing */
+    .section{
+      margin-top: 1.25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Topbar -->
+  <nav class="navbar navbar-expand-lg px-3 px-lg-4 py-3">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold" href="#">
+        <span class="rounded-3 glass px-2 py-1"><i class="bi bi-wallet2"></i></span>
+        Finanzas personales
+      </a>
+
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <span id="sessionPill" class="pill d-none">
+          <i class="bi bi-person-check"></i>
+          <span class="tiny" id="sessionEmail">Sesión iniciada</span>
+        </span>
+
+        <button id="btnLoginGoogleTop" class="btn btn-sm btn-gradient">
+          <i class="bi bi-google me-1"></i> Ingresar con Google
+        </button>
+
+        <button id="btnLogoutTop" class="btn btn-sm btn-outline-dark d-none">
+          <i class="bi bi-box-arrow-right me-1"></i> Salir
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container pb-5">
+    <!-- HERO (simple, no-abrumador) -->
+    <div class="row g-4 align-items-stretch">
+      <div class="col-12 col-lg-7">
+        <div class="card p-4 h-100">
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="pill"><i class="bi bi-shield-lock"></i> Datos protegidos</span>
+            <span class="pill"><i class="bi bi-phone"></i> Móvil + desktop</span>
+            <span class="pill"><i class="bi bi-graph-up"></i> Reportes claros</span>
+          </div>
+
+          <h1 class="display-6 fw-bold mb-2">Ordená tus finanzas en 3 pasos</h1>
+          <p class="muted mb-3">
+            1) Planificás <b>estimados</b>. 2) Cargás lo <b>real</b>. 3) Mirás <b>reportes</b> y aprendés del mes.
+          </p>
+
+          <div class="d-flex flex-column flex-sm-row gap-2">
+            <button id="btnLoginGoogle" class="btn btn-gradient btn-lg flex-fill">
+              <i class="bi bi-google me-2"></i> Iniciar sesión con Google
+            </button>
+            <button class="btn btn-soft btn-lg flex-fill" data-bs-toggle="modal" data-bs-target="#registerModal">
+              <i class="bi bi-person-plus me-2"></i> Registrarme
+            </button>
+          </div>
+
+          <div class="tiny muted mt-3">
+            Demo UI: simula login/BD con <code>localStorage</code>.
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURES (pocas, claras) -->
+      <div class="col-12 col-lg-5">
+        <div class="card p-4 h-100">
+          <h5 class="fw-semibold mb-3">¿Qué vas a ver acá?</h5>
+
+          <div class="d-grid gap-3">
+            <div class="d-flex gap-3 align-items-start feat">
+              <i class="bi bi-pencil-square"></i>
+              <div>
+                <div class="fw-semibold">Estimados del mes</div>
+                <div class="tiny muted">Ingreso, inversión, meta de ahorro y conceptos (comida, salidas, etc.).</div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 align-items-start feat">
+              <i class="bi bi-check2-square"></i>
+              <div>
+                <div class="fw-semibold">Reales al cierre</div>
+                <div class="tiny muted">Completás lo que pasó de verdad y queda guardado.</div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 align-items-start feat">
+              <i class="bi bi-bar-chart-line"></i>
+              <div>
+                <div class="fw-semibold">Reportes útiles</div>
+                <div class="tiny muted">Comparativo, cumplimiento y exportación a Excel/Sheets.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="tiny muted">
+            Idea futura: Power BI / Chart.js para gráficos más pro.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL (sin pestaña preseleccionada) -->
+    <div class="card p-3 p-lg-4 section">
+      <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-center justify-content-between">
+        <div>
+          <h4 class="fw-bold mb-1"><i class="bi bi-layout-text-window-reverse me-2"></i>Panel</h4>
+          <div class="muted tiny">Elegí una pestaña para continuar (se habilitan al iniciar sesión).</div>
+        </div>
+
+        <ul class="nav nav-pills gap-2" id="appTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-est" data-bs-toggle="pill" data-bs-target="#pane-est" type="button" role="tab">
+              <i class="bi bi-pencil-square me-1"></i> Estimados
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-real" data-bs-toggle="pill" data-bs-target="#pane-real" type="button" role="tab">
+              <i class="bi bi-check2-square me-1"></i> Reales
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-rep" data-bs-toggle="pill" data-bs-target="#pane-rep" type="button" role="tab">
+              <i class="bi bi-bar-chart-line me-1"></i> Reportes
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="tab-content" id="appTabsContent">
+        <!-- HOME empty state -->
+        <div class="tab-pane fade show active" id="pane-home" role="tabpanel" tabindex="0">
+          <div class="empty-state text-center p-4 p-lg-5">
+            <div class="display-6 mb-2">🧭</div>
+            <h5 class="fw-bold mb-2">Elegí una pestaña para continuar</h5>
+            <p class="muted mb-4">
+              Arrancá por <b>Estimados</b> para armar tu presupuesto del mes,
+              después cargá lo <b>Real</b>, y por último mirá los <b>Reportes</b>.
+            </p>
+            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+              <button class="btn btn-gradient" id="btnGoEst">
+                <i class="bi bi-pencil-square me-2"></i> Ir a Estimados
+              </button>
+              <button class="btn btn-outline-dark" id="btnGoRep">
+                <i class="bi bi-bar-chart-line me-2"></i> Ver Reportes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESTIMADOS -->
+        <div class="tab-pane fade" id="pane-est" role="tabpanel" aria-labelledby="tab-est" tabindex="0">
+          <div class="row g-4">
+            <div class="col-12 col-lg-5">
+              <div class="card p-3 p-lg-4 h-100">
+                <h5 class="fw-semibold mb-3">Estimados del mes</h5>
+
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Mes</label>
+                    <input id="estMonth" type="month" class="form-control" />
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Ingreso estimado</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input id="estIncome" type="number" min="0" class="form-control" placeholder="Ej: 1200000" />
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Inversión estimada</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input id="estInvest" type="number" min="0" class="form-control" placeholder="Ej: 250000" />
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Meta de ahorro</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input id="estSavingGoal" type="number" min="0" class="form-control" placeholder="Ej: 150000" />
+                    </div>
+                  </div>
+
+                  <div class="col-12 d-grid">
+                    <button id="btnSaveEstimated" class="btn btn-gradient">
+                      <i class="bi bi-save2 me-2"></i> Guardar estimado
+                    </button>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="tiny muted">
+                      Consejo: empezá con 5–8 conceptos. Después refinás.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-7">
+              <div class="card p-3 p-lg-4 h-100">
+                <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center mb-3">
+                  <h5 class="fw-semibold mb-0">Conceptos y presupuestos</h5>
+                  <span class="pill"><i class="bi bi-tags"></i> personalizable</span>
+                </div>
+
+                <div class="row g-2 align-items-end">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label tiny muted">Concepto</label>
+                    <input id="conceptName" class="form-control" placeholder="Ej: Comida / Salidas / Emergencia" />
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label tiny muted">Monto</label>
+                    <input id="conceptAmount" type="number" min="0" class="form-control" placeholder="Ej: 90000" />
+                  </div>
+                  <div class="col-12 col-md-2 d-grid">
+                    <button id="btnAddConcept" class="btn btn-outline-dark">
+                      <i class="bi bi-plus-lg"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Concepto</th>
+                        <th class="text-end">Estimado</th>
+                        <th class="text-end" style="width:90px;">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody id="conceptsTable">
+                      <tr><td colspan="3" class="text-center muted py-4">Todavía no agregaste conceptos.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <div class="tiny muted">Total conceptos: <span id="conceptsTotal">$ 0</span></div>
+                  <span class="pill"><i class="bi bi-lightning-charge"></i> rápido de cargar</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REALES -->
+        <div class="tab-pane fade" id="pane-real" role="tabpanel" aria-labelledby="tab-real" tabindex="0">
+          <div class="row g-4">
+            <div class="col-12 col-lg-5">
+              <div class="card p-3 p-lg-4 h-100">
+                <h5 class="fw-semibold mb-3">Reales del mes</h5>
+
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Mes</label>
+                    <input id="realMonth" type="month" class="form-control" />
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Ingreso real</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input id="realIncome" type="number" min="0" class="form-control" placeholder="Ej: 1180000" />
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label tiny muted">Inversión real</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input id="realInvest" type="number" min="0" class="form-control" placeholder="Ej: 300000" />
+                    </div>
+                  </div>
+
+                  <div class="col-12 d-grid">
+                    <button id="btnSaveReal" class="btn btn-gradient">
+                      <i class="bi bi-save2 me-2"></i> Guardar real
+                    </button>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="tiny muted">
+                      Después completás los montos reales por concepto en la tabla de la derecha.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-7">
+              <div class="card p-3 p-lg-4 h-100">
+                <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center mb-3">
+                  <h5 class="fw-semibold mb-0">Gastos reales por concepto</h5>
+                  <span class="pill"><i class="bi bi-check-circle"></i> comparables</span>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Concepto</th>
+                        <th class="text-end">Estimado</th>
+                        <th class="text-end">Real</th>
+                      </tr>
+                    </thead>
+                    <tbody id="realTable">
+                      <tr><td colspan="3" class="text-center muted py-4">Agregá conceptos en “Estimados” para cargarlos acá.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                  <div class="tiny muted">
+                    Total real (conceptos): <span id="realTotal">$ 0</span>
+                  </div>
+                  <button id="btnSaveRealConcepts" class="btn btn-outline-dark btn-sm">
+                    <i class="bi bi-check2-circle me-1"></i> Guardar gastos reales
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REPORTES (con KPIs adentro, no en home) -->
+        <div class="tab-pane fade" id="pane-rep" role="tabpanel" aria-labelledby="tab-rep" tabindex="0">
+          <div class="row g-4">
+            <div class="col-12 col-lg-6">
+              <div class="card p-3 p-lg-4 h-100">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                  <h5 class="fw-semibold mb-0"><i class="bi bi-clipboard-data me-2"></i>Comparativo</h5>
+                  <span class="pill"><i class="bi bi-file-earmark-arrow-down"></i> exportable</span>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <div class="glass rounded-4 p-3">
+                      <div class="tiny muted">Ingreso</div>
+                      <div class="fw-semibold">Est: <span id="repEstIncome">$ 0</span></div>
+                      <div class="fw-semibold">Real: <span id="repRealIncome">$ 0</span></div>
+                      <div class="tiny muted mt-1">Cumpl.: <span class="badge text-bg-light" id="repIncomeDelta">0%</span></div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <div class="glass rounded-4 p-3">
+                      <div class="tiny muted">Inversión</div>
+                      <div class="fw-semibold">Est: <span id="repEstInvest">$ 0</span></div>
+                      <div class="fw-semibold">Real: <span id="repRealInvest">$ 0</span></div>
+                      <div class="tiny muted mt-1">Cumpl.: <span class="badge text-bg-light" id="repInvestDelta">0%</span></div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="glass rounded-4 p-3">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <div class="tiny muted">Cumplimiento (conceptos)</div>
+                          <div class="fw-bold fs-5" id="repCompliance">0%</div>
+                        </div>
+                        <i class="bi bi-award fs-2" style="color: var(--brand3)"></i>
+                      </div>
+                      <div class="progress mt-2">
+                        <div class="progress-bar" id="repComplianceBar" style="width:0%"></div>
+                      </div>
+                      <div class="tiny muted mt-2">
+                        Demo: compara total real de conceptos vs total estimado.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                  <button id="btnExportEstimated" class="btn btn-outline-dark flex-fill">
+                    <i class="bi bi-filetype-csv me-2"></i> Estimados (CSV)
+                  </button>
+                  <button id="btnExportReal" class="btn btn-outline-dark flex-fill">
+                    <i class="bi bi-filetype-csv me-2"></i> Reales (CSV)
+                  </button>
+                </div>
+
+                <div class="tiny muted mt-2">
+                  CSV abre en Excel/Sheets. Luego lo pasamos a XLSX si querés.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <div class="card p-3 p-lg-4 h-100">
+                <h5 class="fw-semibold mb-3"><i class="bi bi-bar-chart-steps me-2"></i>Gastos (mock)</h5>
+
+                <div class="glass rounded-4 p-3">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <div class="tiny muted">Distribución</div>
+                      <div class="fw-semibold">Top conceptos del mes</div>
+                    </div>
+                    <span class="pill"><i class="bi bi-stars"></i> visual</span>
+                  </div>
+
+                  <div id="bars" class="mt-3 d-grid gap-2"></div>
+
+                  <div class="tiny muted mt-2">
+                    (Demo sin librerías: barras con divs. En real: Chart.js / Power BI.)
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- tab-content -->
+    </div>
+
+    <div class="tiny muted text-center mt-4">
+      Bootstrap 5 + demo localStorage (UX/UI).
+    </div>
+  </main>
+
+  <!-- LOCKED OVERLAY -->
+  <div id="lockedOverlay" class="locked-overlay show">
+    <div class="overlay-card">
+      <div class="card p-4 p-lg-5 glass">
+        <div class="d-flex flex-column flex-lg-row gap-4 align-items-lg-center">
+          <div class="flex-grow-1">
+            <h2 class="fw-bold mb-2"><i class="bi bi-lock-fill me-2"></i>Primero iniciá sesión</h2>
+            <p class="muted mb-3">
+              Para usar la app necesitás iniciar sesión con Google o registrarte.
+              Así se habilitan las pestañas y el guardado de datos.
+            </p>
+            <div class="d-flex flex-column flex-sm-row gap-2">
+              <button id="btnOverlayGoogle" class="btn btn-gradient btn-lg flex-fill">
+                <i class="bi bi-google me-2"></i> Ingresar con Google
+              </button>
+              <button class="btn btn-soft btn-lg flex-fill" data-bs-toggle="modal" data-bs-target="#registerModal">
+                <i class="bi bi-person-plus me-2"></i> Registrarme
+              </button>
+            </div>
+            <div class="tiny muted mt-3">
+              (Producción: Google Sign-In + Firebase Auth/Firestore)
+            </div>
+          </div>
+
+          <div class="d-none d-lg-block" style="width:1px; background: rgba(2,6,23,.12); height: 180px;"></div>
+
+          <div class="flex-grow-1">
+            <div class="glass rounded-4 p-3">
+              <div class="fw-semibold mb-2"><i class="bi bi-check2-circle me-2"></i>Flujo simple</div>
+              <ol class="muted mb-0 ps-3">
+                <li>Estimados</li>
+                <li>Reales</li>
+                <li>Reportes</li>
+              </ol>
+            </div>
+            <div class="tiny muted mt-3">
+              Esta capa se oculta al “loguearte” en la demo.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass">
+        <div class="modal-header border-0">
+          <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Registro (demo)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label tiny muted">Email</label>
+            <input id="regEmail" class="form-control" placeholder="tu@email.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label tiny muted">Contraseña</label>
+            <input id="regPass" type="password" class="form-control" placeholder="••••••••">
+          </div>
+          <div class="tiny muted">
+            Demo: no valida nada, solo simula usuario logueado.
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnRegister" class="btn btn-gradient" data-bs-dismiss="modal">
+            <i class="bi bi-check2 me-1"></i> Crear cuenta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // --- Simple state (demo) ---
+    const LS_KEY = "fp_demo_state_v2";
+    const defaultState = {
+      loggedIn: false,
+      user: { email: "demo@user.com" },
+      estimated: { month: "", income: 0, invest: 0, savingGoal: 0, concepts: [] },
+      real: { month: "", income: 0, invest: 0, concepts: {} }
+    };
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        return raw ? JSON.parse(raw) : structuredClone(defaultState);
+      }catch(e){
+        return structuredClone(defaultState);
+      }
+    }
+    function saveState(s){ localStorage.setItem(LS_KEY, JSON.stringify(s)); }
+    let state = loadState();
+
+    const fmt = n => "$ " + (Number(n||0)).toLocaleString("es-AR");
+    const byId = id => document.getElementById(id);
+
+    function setLockedUI(locked){
+      byId("lockedOverlay").classList.toggle("show", locked);
+
+      byId("btnLogoutTop").classList.toggle("d-none", locked);
+      byId("btnLoginGoogleTop").classList.toggle("d-none", !locked);
+      byId("sessionPill").classList.toggle("d-none", locked);
+
+      ["tab-est","tab-real","tab-rep"].forEach(id=>{
+        const el = byId(id);
+        el.disabled = locked;
+        el.classList.toggle("disabled", locked);
+      });
+
+      // Si está bloqueado, forzamos home visible
+      if(locked){
+        showHomePane();
+      }
+    }
+
+    function showHomePane(){
+      // Desactiva tabs/panes y deja "home"
+      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("show","active"));
+      document.querySelectorAll(".nav-link").forEach(n => n.classList.remove("active"));
+
+      byId("pane-home").classList.add("show","active");
+    }
+
+    function loginAs(email){
+      state.loggedIn = true;
+      state.user.email = email || "googleuser@gmail.com";
+      saveState(state);
+
+      byId("sessionEmail").textContent = state.user.email;
+      setLockedUI(false);
+      refreshUI();
+      // NO abrimos ninguna pestaña por defecto: queda home hasta que el usuario elija
+      showHomePane();
+    }
+
+    function logout(){
+      state.loggedIn = false;
+      saveState(state);
+      setLockedUI(true);
+      showHomePane();
+    }
+
+    function escapeHtml(str){
+      return String(str||"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderConcepts(){
+      const tbody = byId("conceptsTable");
+      const concepts = state.estimated.concepts || [];
+
+      if(!concepts.length){
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center muted py-4">Todavía no agregaste conceptos.</td></tr>`;
+      }else{
+        tbody.innerHTML = concepts.map((c, idx)=>`
+          <tr>
+            <td class="fw-semibold">${escapeHtml(c.name)}</td>
+            <td class="text-end fw-semibold">${fmt(c.amount)}</td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-dark" onclick="removeConcept(${idx})">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      const total = concepts.reduce((a,c)=>a+Number(c.amount||0),0);
+      byId("conceptsTotal").textContent = fmt(total);
+    }
+
+    function renderRealTable(){
+      const tbody = byId("realTable");
+      const concepts = state.estimated.concepts || [];
+
+      if(!concepts.length){
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center muted py-4">Agregá conceptos en “Estimados” para cargarlos acá.</td></tr>`;
+        byId("realTotal").textContent = fmt(0);
+        return;
+      }
+
+      tbody.innerHTML = concepts.map(c=>{
+        const val = (state.real.concepts||{})[c.name] ?? "";
+        return `
+          <tr>
+            <td class="fw-semibold">${escapeHtml(c.name)}</td>
+            <td class="text-end">${fmt(c.amount)}</td>
+            <td class="text-end" style="max-width: 180px;">
+              <input class="form-control form-control-sm text-end"
+                     type="number" min="0"
+                     value="${val}"
+                     placeholder="0"
+                     oninput="setRealConcept('${encodeURIComponent(c.name)}', this.value)">
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      const total = Object.values(state.real.concepts||{}).reduce((a,v)=>a+Number(v||0),0);
+      byId("realTotal").textContent = fmt(total);
+    }
+
+    function renderReports(){
+      const est = state.estimated;
+      const real = state.real;
+
+      byId("repEstIncome").textContent = fmt(est.income);
+      byId("repRealIncome").textContent = fmt(real.income);
+
+      byId("repEstInvest").textContent = fmt(est.invest);
+      byId("repRealInvest").textContent = fmt(real.invest);
+
+      const deltaPct = (a,b)=>{
+        a = Number(a||0); b = Number(b||0);
+        if(a === 0) return "0%";
+        return Math.round((b/a)*100) + "%";
+      };
+      byId("repIncomeDelta").textContent = deltaPct(est.income, real.income);
+      byId("repInvestDelta").textContent = deltaPct(est.invest, real.invest);
+
+      const estTotalConcepts = est.concepts.reduce((a,c)=>a+Number(c.amount||0),0);
+      const realTotalConcepts = Object.values(real.concepts||{}).reduce((a,v)=>a+Number(v||0),0);
+      const base = estTotalConcepts || 1;
+      const compliance = Math.max(0, Math.min(100, Math.round((realTotalConcepts/base)*100)));
+
+      byId("repCompliance").textContent = compliance + "%";
+      byId("repComplianceBar").style.width = compliance + "%";
+
+      // bars
+      const bars = byId("bars");
+      const entries = Object.entries(real.concepts||{})
+        .map(([k,v])=>({name:k, value:Number(v||0)}))
+        .sort((a,b)=>b.value-a.value)
+        .slice(0,6);
+
+      if(!entries.length){
+        bars.innerHTML = `<div class="muted tiny">Todavía no hay gastos reales para graficar.</div>`;
+      }else{
+        const max = Math.max(...entries.map(e=>e.value), 1);
+        bars.innerHTML = entries.map(e=>{
+          const w = Math.round((e.value/max)*100);
+          return `
+            <div>
+              <div class="d-flex justify-content-between tiny muted">
+                <span>${escapeHtml(e.name)}</span>
+                <span>${fmt(e.value)}</span>
+              </div>
+              <div class="progress" style="height:10px;">
+                <div class="progress-bar" style="width:${w}%"></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function refreshUI(){
+      // forms
+      byId("estMonth").value = state.estimated.month || "";
+      byId("estIncome").value = state.estimated.income || "";
+      byId("estInvest").value = state.estimated.invest || "";
+      byId("estSavingGoal").value = state.estimated.savingGoal || "";
+
+      byId("realMonth").value = state.real.month || "";
+      byId("realIncome").value = state.real.income || "";
+      byId("realInvest").value = state.real.invest || "";
+
+      byId("sessionEmail").textContent = state.user.email || "Sesión iniciada";
+
+      renderConcepts();
+      renderRealTable();
+      renderReports();
+    }
+
+    // global actions
+    window.removeConcept = function(idx){
+      state.estimated.concepts.splice(idx,1);
+      saveState(state);
+      refreshUI();
+    }
+
+    window.setRealConcept = function(nameEnc, value){
+      const name = decodeURIComponent(nameEnc);
+      state.real.concepts = state.real.concepts || {};
+      state.real.concepts[name] = value === "" ? "" : Number(value);
+      saveState(state);
+      renderRealTable();
+      renderReports();
+    }
+
+    function exportCSV(filename, rows){
+      const csv = rows.map(r => r.map(v=>{
+        const s = String(v ?? "");
+        return (s.includes(",") || s.includes('"') || s.includes("\n")) ? `"${s.replaceAll('"','""')}"` : s;
+      }).join(",")).join("\n");
+
+      const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // bind events
+    function bindLoginButtons(){
+      const go = () => loginAs("googleuser@gmail.com");
+      byId("btnLoginGoogle").addEventListener("click", go);
+      byId("btnOverlayGoogle").addEventListener("click", go);
+      byId("btnLoginGoogleTop").addEventListener("click", go);
+
+      byId("btnRegister").addEventListener("click", ()=>{
+        const email = byId("regEmail").value.trim() || "nuevo@usuario.com";
+        loginAs(email);
+      });
+
+      byId("btnLogoutTop").addEventListener("click", logout);
+    }
+
+    function bindHomeButtons(){
+      byId("btnGoEst").addEventListener("click", ()=>{
+        if(byId("tab-est").disabled) return;
+        new bootstrap.Tab(byId("tab-est")).show();
+      });
+      byId("btnGoRep").addEventListener("click", ()=>{
+        if(byId("tab-rep").disabled) return;
+        new bootstrap.Tab(byId("tab-rep")).show();
+      });
+    }
+
+    function bindForms(){
+      byId("btnSaveEstimated").addEventListener("click", ()=>{
+        state.estimated.month = byId("estMonth").value;
+        state.estimated.income = Number(byId("estIncome").value || 0);
+        state.estimated.invest = Number(byId("estInvest").value || 0);
+        state.estimated.savingGoal = Number(byId("estSavingGoal").value || 0);
+        saveState(state);
+        refreshUI();
+      });
+
+      byId("btnAddConcept").addEventListener("click", ()=>{
+        const name = byId("conceptName").value.trim();
+        const amount = Number(byId("conceptAmount").value || 0);
+        if(!name) return;
+
+        state.estimated.concepts = state.estimated.concepts || [];
+        state.estimated.concepts.push({ name, amount });
+
+        byId("conceptName").value = "";
+        byId("conceptAmount").value = "";
+
+        saveState(state);
+        refreshUI();
+      });
+
+      byId("btnSaveReal").addEventListener("click", ()=>{
+        state.real.month = byId("realMonth").value;
+        state.real.income = Number(byId("realIncome").value || 0);
+        state.real.invest = Number(byId("realInvest").value || 0);
+        saveState(state);
+        refreshUI();
+      });
+
+      byId("btnSaveRealConcepts").addEventListener("click", ()=>{
+        saveState(state);
+        refreshUI();
+      });
+
+      byId("btnExportEstimated").addEventListener("click", ()=>{
+        const est = state.estimated;
+        const rows = [
+          ["Mes", est.month],
+          ["Ingreso estimado", est.income],
+          ["Inversión estimada", est.invest],
+          ["Meta ahorro", est.savingGoal],
+          [],
+          ["Concepto","Monto estimado"]
+        ];
+        (est.concepts||[]).forEach(c => rows.push([c.name, c.amount]));
+        exportCSV("estimados.csv", rows);
+      });
+
+      byId("btnExportReal").addEventListener("click", ()=>{
+        const real = state.real;
+        const rows = [
+          ["Mes", real.month],
+          ["Ingreso real", real.income],
+          ["Inversión real", real.invest],
+          [],
+          ["Concepto","Monto real"]
+        ];
+        Object.entries(real.concepts||{}).forEach(([k,v]) => rows.push([k, v]));
+        exportCSV("reales.csv", rows);
+      });
+    }
+
+    // init
+    bindLoginButtons();
+    bindHomeButtons();
+    bindForms();
+
+    setLockedUI(!state.loggedIn);
+    refreshUI();
+
+    // IMPORTANT: siempre arrancar en Home (sin tab preseleccionada)
+    showHomePane();
+
+    // Y si ya venía logueado por localStorage, mantener home igual
+    if(state.loggedIn){
+      byId("sessionEmail").textContent = state.user.email || "Sesión iniciada";
+      setLockedUI(false);
+    }
+  </script>
+</body>
+</html>
