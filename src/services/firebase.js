@@ -3,19 +3,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Configuración de tu proyecto Firebase
-// TEMPORAL: Debug de variables de entorno
-console.log('🔍 DEBUG - Variables de entorno:');
-console.log('API_KEY:', import.meta.env.VITE_FIREBASE_API_KEY ? 'Configurada ✅' : 'FALTA ❌');
-console.log('AUTH_DOMAIN:', import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ? 'Configurada ✅' : 'FALTA ❌');
-console.log('PROJECT_ID:', import.meta.env.VITE_FIREBASE_PROJECT_ID ? 'Configurada ✅' : 'FALTA ❌');
-
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyDqvFBD1PnhfMOOfF_KDq8NmN6ofNJSJUM",
+  authDomain: "finanzas-personales-ce30a.firebaseapp.com",
+  projectId: "finanzas-personales-ce30a",
+  storageBucket: "finanzas-personales-ce30a.firebasestorage.app",
+  messagingSenderId: "974307261836",
+  appId: "1:974307261836:web:ac2145e9199833bac86aa9"
 };
 
 // Inicializar Firebase
