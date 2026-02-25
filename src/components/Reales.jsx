@@ -217,8 +217,15 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
         <input
           type="month"
           className="form-control"
+          style={{ cursor: 'pointer' }}
           value={mes}
           onChange={e => setMes(e.target.value)}
+          onClick={e => {
+            // Abrir el selector al hacer clic en cualquier parte del input
+            if (e.target.showPicker) {
+              e.target.showPicker();
+            }
+          }}
           disabled={guardando}
         />
       </div>
@@ -389,7 +396,17 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
                           ) : (
                             <>
                               <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-                                <small className="text-muted">Items detallados:</small>
+                                <div>
+                                  <small className="text-muted fw-semibold d-block">
+                                    📋 Items detallados
+                                    {concepto.gastos && concepto.gastos.length > 0 && (
+                                      <span className="ms-2 badge bg-primary">{concepto.gastos.length}</span>
+                                    )}
+                                  </small>
+                                  <small className="text-muted d-none d-md-block" style={{ fontSize: '0.75rem' }}>
+                                    Ingresá el nombre y monto de cada gasto individual
+                                  </small>
+                                </div>
                                 <button
                                   className="btn btn-sm btn-primary w-100 w-sm-auto"
                                   onClick={() => agregarGasto(concepto.nombre)}
@@ -400,47 +417,95 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
                                 </button>
                               </div>
 
-                              {/* Items detallados - Layout móvil/desktop */}
+                              {/* Items detallados - Diseño diferente para móvil y desktop */}
                               {concepto.gastos && concepto.gastos.length > 0 ? (
-                                <div className="d-flex flex-column gap-2">
-                                  {concepto.gastos.map((gasto, gastoIdx) => (
-                                    <div key={gastoIdx} className="border rounded p-2 bg-light">
-                                      {/* Input de detalle */}
-                                      <input
-                                        type="text"
-                                        className="form-control form-control-sm mb-2"
-                                        placeholder="Ej: Salidas a comer"
-                                        value={gasto.detalle}
-                                        onChange={e => actualizarDetalleGasto(concepto.nombre, gastoIdx, e.target.value)}
-                                        disabled={guardando}
-                                      />
-                                      
-                                      {/* Input de monto + botón eliminar */}
-                                      <div className="d-flex gap-2">
-                                        <div className="input-group input-group-sm flex-grow-1">
-                                          <span className="input-group-text">$</span>
-                                          <input
-                                            type="number"
-                                            className="form-control"
-                                            placeholder="0"
-                                            value={gasto.monto}
-                                            onChange={e => actualizarMontoGasto(concepto.nombre, gastoIdx, e.target.value)}
-                                            disabled={guardando}
-                                          />
-                                        </div>
-                                        <button
-                                          className="btn btn-sm btn-outline-danger"
-                                          onClick={() => eliminarGasto(concepto.nombre, gastoIdx)}
+                                <>
+                                  {/* Vista móvil: Cards apilados */}
+                                  <div className="d-md-none d-flex flex-column gap-2">
+                                    {concepto.gastos.map((gasto, gastoIdx) => (
+                                      <div key={gastoIdx} className="border rounded p-2 bg-light">
+                                        {/* Input de detalle */}
+                                        <input
+                                          type="text"
+                                          className="form-control form-control-sm mb-2"
+                                          placeholder="Ej: Salidas a comer"
+                                          value={gasto.detalle}
+                                          onChange={e => actualizarDetalleGasto(concepto.nombre, gastoIdx, e.target.value)}
                                           disabled={guardando}
-                                          type="button"
-                                          title="Eliminar item"
-                                        >
-                                          🗑️
-                                        </button>
+                                        />
+                                        
+                                        {/* Input de monto + botón eliminar */}
+                                        <div className="d-flex gap-2">
+                                          <div className="input-group input-group-sm flex-grow-1">
+                                            <span className="input-group-text">$</span>
+                                            <input
+                                              type="number"
+                                              className="form-control"
+                                              placeholder="0"
+                                              value={gasto.monto}
+                                              onChange={e => actualizarMontoGasto(concepto.nombre, gastoIdx, e.target.value)}
+                                              disabled={guardando}
+                                            />
+                                          </div>
+                                          <button
+                                            className="btn btn-sm btn-outline-danger"
+                                            onClick={() => eliminarGasto(concepto.nombre, gastoIdx)}
+                                            disabled={guardando}
+                                            type="button"
+                                            title="Eliminar item"
+                                          >
+                                            🗑️
+                                          </button>
+                                        </div>
                                       </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Vista desktop: Lista horizontal compacta */}
+                                  <div className="d-none d-md-block">
+                                    <div className="d-flex flex-column gap-2">
+                                      {concepto.gastos.map((gasto, gastoIdx) => (
+                                        <div key={gastoIdx} className="d-flex align-items-center gap-2 p-2 border rounded bg-light">
+                                          {/* Nombre del item - Ocupa todo el espacio disponible */}
+                                          <div className="flex-grow-1">
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              placeholder="Ej: Salidas a comer, Supermercado, Gimnasio..."
+                                              value={gasto.detalle}
+                                              onChange={e => actualizarDetalleGasto(concepto.nombre, gastoIdx, e.target.value)}
+                                              disabled={guardando}
+                                            />
+                                          </div>
+                                          
+                                          {/* Monto */}
+                                          <div className="input-group" style={{ width: '200px', flexShrink: 0 }}>
+                                            <span className="input-group-text">$</span>
+                                            <input
+                                              type="number"
+                                              className="form-control"
+                                              placeholder="0"
+                                              value={gasto.monto}
+                                              onChange={e => actualizarMontoGasto(concepto.nombre, gastoIdx, e.target.value)}
+                                              disabled={guardando}
+                                            />
+                                          </div>
+                                          
+                                          {/* Botón eliminar */}
+                                          <button
+                                            className="btn btn-sm btn-outline-danger"
+                                            onClick={() => eliminarGasto(concepto.nombre, gastoIdx)}
+                                            disabled={guardando}
+                                            type="button"
+                                            title="Eliminar este item"
+                                          >
+                                            🗑️
+                                          </button>
+                                        </div>
+                                      ))}
                                     </div>
-                                  ))}
-                                </div>
+                                  </div>
+                                </>
 
                               ) : (
                                 <div className="text-muted text-center py-2 small border rounded">

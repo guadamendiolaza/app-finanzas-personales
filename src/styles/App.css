@@ -153,6 +153,25 @@ body {
   padding: 1.5rem;
   margin-bottom: 1rem;
   border: 1px solid var(--border-color);
+  font-size: 1.05rem; /* Tamaño de fuente ligeramente mayor */
+}
+
+.component-card label,
+.component-card .form-label {
+  font-size: 1rem;
+}
+
+.component-card .form-control,
+.component-card .form-select {
+  font-size: 1.05rem;
+}
+
+.component-card h5 {
+  font-size: 1.4rem;
+}
+
+.component-card h6 {
+  font-size: 1.15rem;
 }
 
 /* Tablas responsive */
@@ -205,6 +224,21 @@ body {
   background: rgba(255, 255, 255, 0.95) !important;
   border: 1px solid rgba(2, 6, 23, 0.14) !important;
   color: var(--text-muted);
+}
+
+/* Input tipo month con cursor pointer */
+input[type="month"] {
+  cursor: pointer;
+}
+
+input[type="month"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+input[type="month"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 1;
 }
 
 /* Utilidades */
@@ -671,13 +705,19 @@ body {
   /* Component card con menos padding en móvil */
   .component-card {
     padding: 1rem;
+    font-size: 1rem; /* Resetear tamaño base en móvil */
   }
 
   /* Inputs más legibles en móvil */
   .form-control,
   .form-select {
-    font-size: 16px; /* Previene zoom en iOS */
+    font-size: 16px !important; /* Previene zoom en iOS - importante que sobrescriba */
     min-height: 44px; /* Touch target mínimo recomendado */
+  }
+
+  .component-card .form-control,
+  .component-card .form-select {
+    font-size: 16px !important;
   }
 
   /* Input groups con mejor tamaño */

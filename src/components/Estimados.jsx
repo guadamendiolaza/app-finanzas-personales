@@ -129,8 +129,15 @@ const Estimados = ({ estimados, setEstimados, user, onGuardar }) => {
         <input
           type="month"
           className="form-control"
+          style={{ cursor: 'pointer' }}
           value={mes}
           onChange={e => setMes(e.target.value)}
+          onClick={e => {
+            // Abrir el selector al hacer clic en cualquier parte del input
+            if (e.target.showPicker) {
+              e.target.showPicker();
+            }
+          }}
           disabled={guardando}
         />
       </div>
