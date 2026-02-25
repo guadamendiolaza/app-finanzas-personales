@@ -1,15 +1,13 @@
 // Componente para mostrar y gestionar conceptos globales (diseño tipo maqueta)
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 
 const Conceptos = ({ conceptos, setConceptos }) => {
   const [nuevo, setNuevo] = useState('');
-  const hasLoadedFromStorage = useRef(false);
 
   const agregarConcepto = () => {
     if (nuevo.trim()) {
       const nuevos = [...conceptos, { nombre: nuevo }];
       setConceptos(nuevos);
-      localStorage.setItem('conceptos', JSON.stringify(nuevos));
       setNuevo('');
     }
   };
@@ -17,23 +15,14 @@ const Conceptos = ({ conceptos, setConceptos }) => {
   const eliminarConcepto = (nombre) => {
     const nuevos = conceptos.filter(c => c.nombre !== nombre);
     setConceptos(nuevos);
-    localStorage.setItem('conceptos', JSON.stringify(nuevos));
   };
-  
-  // Cargar conceptos desde localStorage al montar (solo una vez)
-  React.useEffect(() => {
-    if (hasLoadedFromStorage.current) return;
-    hasLoadedFromStorage.current = true;
-    
-    const guardados = localStorage.getItem('conceptos');
-    if (guardados && conceptos.length === 0) {
-      setConceptos(JSON.parse(guardados));
-    }
-  }, []);
 
   return (
     <div className="component-card">
-      <h6 className="mb-3 fw-semibold">🏷️ Gestionar Conceptos</h6>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h6 className="mb-0 fw-semibold">🏷️ Gestionar Conceptos</h6>
+        <span className="badge bg-light text-muted">No guardado</span>
+      </div>
       <div className="d-flex align-items-center mb-3 gap-2">
         <input
           className="form-control"
