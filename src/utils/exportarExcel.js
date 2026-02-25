@@ -2,6 +2,18 @@
 import * as XLSX from 'xlsx';
 
 /**
+ * Convertir 'YYYY-MM' a nombre de mes sin problemas de zona horaria
+ */
+function formatearMes(mesStr) {
+  if (!mesStr || typeof mesStr !== 'string') return '';
+  const [anio, mes] = mesStr.split('-');
+  if (!anio || !mes) return mesStr;
+  // Crear fecha con parámetros separados (no string) para evitar problemas de UTC
+  const fecha = new Date(parseInt(anio), parseInt(mes) - 1, 1);
+  return fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+}
+
+/**
  * Exporta los datos financieros a un archivo Excel con 3 hojas:
  * 1. Estimados (por mes)
  * 2. Reales (con detalle de gastos)
@@ -22,7 +34,7 @@ export function exportarExcel(estimados, reales, mesesDisponibles) {
     
     // Fila resumen del mes
     datosEstimados.push({
-      Mes: new Date(mes + '-01').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }),
+      Mes: formatearMes(mes),
       Tipo: 'RESUMEN',
       Concepto: '',
       Monto: '',
@@ -84,7 +96,7 @@ export function exportarExcel(estimados, reales, mesesDisponibles) {
     
     // Fila resumen del mes
     datosReales.push({
-      Mes: new Date(mes + '-01').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }),
+      Mes: formatearMes(mes),
       Tipo: 'RESUMEN',
       Concepto: '',
       Detalle: '',
@@ -202,7 +214,7 @@ export function exportarExcel(estimados, reales, mesesDisponibles) {
       : 0;
 
     return {
-      Mes: new Date(mes + '-01').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }),
+      Mes: formatearMes(mes),
       'Ingreso Est.': ingresoEstimado,
       'Ingreso Real': ingresoReal,
       'Desv. Ingreso': desviacionIngreso,

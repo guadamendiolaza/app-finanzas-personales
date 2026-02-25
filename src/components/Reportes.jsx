@@ -39,6 +39,16 @@ const formatoMoneda = (valor) => {
   }).format(valor);
 };
 
+// Utilidad para convertir 'YYYY-MM' a nombre de mes sin problemas de zona horaria
+const formatearMes = (mesStr, formato = { month: 'long', year: 'numeric' }) => {
+  if (!mesStr || typeof mesStr !== 'string') return '';
+  const [anio, mes] = mesStr.split('-');
+  if (!anio || !mes) return mesStr;
+  // Crear fecha con parámetros separados (no string) para evitar problemas de UTC
+  const fecha = new Date(parseInt(anio), parseInt(mes) - 1, 1);
+  return fecha.toLocaleDateString('es-AR', formato);
+};
+
 // Componente KPI Card
 const KPICard = ({ icon, label, value, subtitle, color = 'primary', comparacion }) => (
   <div className="card border-0 shadow-sm h-100">
@@ -61,12 +71,37 @@ const Reportes = ({ estimados, reales }) => {
   const [mesSeleccionado, setMesSeleccionado] = useState('');
   const [vistaComparativa, setVistaComparativa] = useState('comparar');
 
-  // Obtener lista de meses disponibles
-  const mesesDisponibles = useMemo(() => {
-    return [...new Set([...Object.keys(estimados), ...Object.keys(reales)])].sort();
+  // Obtener lista de meses con datos (formato YYYY-MM validado)
+  const mesesConDatos = useMemo(() => {
+    const meses = [...new Set([...Object.keys(estimados), ...Object.keys(reales)])];
+    // Filtrar solo claves en formato YYYY-MM válido
+    const mesesValidos = meses.filter(m => /^\d{4}-\d{2}$/.test(m));
+    return mesesValidos.sort();
   }, [estimados, reales]);
 
-  if (mesesDisponibles.length === 0) {
+  // Generar todos los meses del año actual para el selector
+  const mesesDelAnioActual = useMemo(() => {
+    const anioActual = new Date().getFullYear();
+    const meses = [];
+    for (let mes = 1; mes <= 12; mes++) {
+      const mesStr = `${anioActual}-${String(mes).padStart(2, '0')}`;
+      meses.push(mesStr);
+    }
+    return meses;
+  }, []);
+
+  // Combinar meses con datos + meses del año actual (sin duplicados)
+  const mesesDisponibles = useMemo(() => {
+    const todosMeses = [...new Set([...mesesConDatos, ...mesesDelAnioActual])];
+    return todosMeses.sort().reverse(); // Más recientes primero
+  }, [mesesConDatos, mesesDelAnioActual]);
+
+  // Verificar si un mes tiene datos
+  const mesTieneDatos = (mes) => {
+    return mesesConDatos.includes(mes);
+  };
+
+  if (mesesConDatos.length === 0) {
     return (
       <div className="component-card text-center py-5">
         <div className="fs-1 mb-3">📊</div>
@@ -76,8 +111,8 @@ const Reportes = ({ estimados, reales }) => {
     );
   }
 
-  // Si no hay mes seleccionado, usar el más reciente
-  const mesActual = mesSeleccionado || mesesDisponibles[mesesDisponibles.length - 1];
+  // Si no hay mes seleccionado, usar el más reciente con datos
+  const mesActual = mesSeleccionado || mesesConDatos[mesesConDatos.length - 1];
   const datosEst = estimados[mesActual] || {};
   const datosReal = reales[mesActual] || {};
 
@@ -301,8 +336,8 @@ const Reportes = ({ estimados, reales }) => {
     }
   };
 
-  // Calcular evolución mensual de gastos (últimos 6 meses)
-  const mesesParaEvolucion = mesesDisponibles.slice(-6);
+  // Calcular evolución mensual de gastos (últimos 6 meses con datos)
+  const mesesParaEvolucion = mesesConDatos.slice(-6);
   const gastosEvolucion = mesesParaEvolucion.map(mes => {
     const datosRealesMes = reales[mes] || {};
     const conceptosRealesMes = datosRealesMes.conceptos || [];
@@ -317,7 +352,7 @@ const Reportes = ({ estimados, reales }) => {
 
   const dataEvolucionGastos = {
     labels: mesesParaEvolucion.map(mes => 
-      new Date(mes + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+      formatearMes(mes, { month: 'short', year: '2-digit' })
     ),
     datasets: [
       {
@@ -447,7 +482,7 @@ const Reportes = ({ estimados, reales }) => {
     let capitalAcumulado = 0;
     let gananciaAcumulada = 0;
     
-    return mesesDisponibles.map(mes => {
+    return mesesConDatos.map(mes => {
       const datosRealesMes = reales[mes] || {};
       const inversionMes = Number(datosRealesMes.inversion || 0);
       const gananciaMes = Number(datosRealesMes.ganadoInversion || 0);
@@ -465,7 +500,7 @@ const Reportes = ({ estimados, reales }) => {
         roi: inversionMes > 0 ? ((gananciaMes / inversionMes) * 100).toFixed(2) : 0
       };
     });
-  }, [mesesDisponibles, reales]);
+  }, [mesesConDatos, reales]);
 
   // KPIs totales de inversión
   const capitalTotalInvertido = evolucionCapital.length > 0 
@@ -482,7 +517,7 @@ const Reportes = ({ estimados, reales }) => {
   // Datos para gráfico de interés compuesto (área apilada)
   const dataInteresCompuesto = {
     labels: evolucionCapital.map(e => 
-      new Date(e.mes + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+      formatearMes(e.mes, { month: 'short', year: '2-digit' })
     ),
     datasets: [
       {
@@ -509,7 +544,7 @@ const Reportes = ({ estimados, reales }) => {
   // Datos para gráfico de retorno mensual (%)
   const dataRetornoMensual = {
     labels: evolucionCapital.map(e => 
-      new Date(e.mes + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+      formatearMes(e.mes, { month: 'short', year: '2-digit' })
     ),
     datasets: [
       {
@@ -530,7 +565,7 @@ const Reportes = ({ estimados, reales }) => {
   
   // Evolución histórica mes a mes
   const historico = useMemo(() => {
-    return mesesDisponibles.map((mes, idx) => {
+    return mesesConDatos.map((mes, idx) => {
       const datosEstimados = estimados[mes] || {};
       const datosReales = reales[mes] || {};
       
@@ -557,7 +592,7 @@ const Reportes = ({ estimados, reales }) => {
       // Variación vs mes anterior
       let variacionGastos = 0;
       if (idx > 0) {
-        const mesAnterior = mesesDisponibles[idx - 1];
+        const mesAnterior = mesesConDatos[idx - 1];
         const gastosRealesAnt = (reales[mesAnterior]?.conceptos || []).reduce((sum, c) => {
           const gastosConcepto = (c.gastos || []).reduce((s, g) => s + Number(g.monto || 0), 0);
           return sum + gastosConcepto;
@@ -585,7 +620,7 @@ const Reportes = ({ estimados, reales }) => {
         desviacionAhorro: ahorroReal - ahorroEstimado
       };
     });
-  }, [mesesDisponibles, estimados, reales]);
+  }, [mesesConDatos, estimados, reales]);
 
   // KPIs históricos generales
   const promedioAhorroMensual = historico.length > 0 
@@ -606,7 +641,7 @@ const Reportes = ({ estimados, reales }) => {
   // Datos para gráfico de evolución de ahorros
   const dataEvolucionAhorros = {
     labels: historico.map(h => 
-      new Date(h.mes + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+      formatearMes(h.mes, { month: 'short', year: '2-digit' })
     ),
     datasets: [
       {
@@ -675,7 +710,7 @@ const Reportes = ({ estimados, reales }) => {
   // Datos para gráfico de cumplimiento de presupuesto
   const dataCumplimientoPresupuesto = {
     labels: historico.map(h => 
-      new Date(h.mes + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+      formatearMes(h.mes, { month: 'short', year: '2-digit' })
     ),
     datasets: [
       {
@@ -736,25 +771,29 @@ const Reportes = ({ estimados, reales }) => {
       {/* Header con filtros y exportar */}
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <h5 className="mb-0">📊 Reportes Financieros</h5>
-        <div className="d-flex gap-2 align-items-center">
+        <div className="d-flex gap-2 align-items-center flex-wrap">
           <select
             className="form-select form-select-sm"
-            style={{ width: '200px' }}
+            style={{ width: '220px' }}
             value={mesActual}
             onChange={(e) => setMesSeleccionado(e.target.value)}
           >
-            {mesesDisponibles.map(mes => (
-              <option key={mes} value={mes}>
-                {new Date(mes + '-01').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
-              </option>
-            ))}
+            {mesesDisponibles.map(mes => {
+              const tieneDatos = mesTieneDatos(mes);
+              const nombreMes = formatearMes(mes);
+              return (
+                <option key={mes} value={mes}>
+                  {tieneDatos ? '✓ ' : '○ '}{nombreMes}
+                </option>
+              );
+            })}
           </select>
           <button 
             className="btn btn-sm btn-outline-primary" 
             title="Exportar a Excel"
             onClick={() => {
               try {
-                exportarExcel(estimados, reales, mesesDisponibles);
+                exportarExcel(estimados, reales, mesesConDatos);
                 alert('✅ Excel exportado exitosamente');
               } catch (error) {
                 console.error('Error al exportar:', error);
@@ -802,6 +841,23 @@ const Reportes = ({ estimados, reales }) => {
           </button>
         </li>
       </ul>
+
+      {/* Alerta si el mes seleccionado no tiene datos */}
+      {!mesTieneDatos(mesActual) && (
+        <div className="alert alert-warning mb-4">
+          <strong>⚠️ Sin datos para este mes</strong>
+          <p className="mb-0 mt-1">
+            El mes seleccionado no tiene información cargada. Ir a las pestañas de <strong>Estimados</strong> y <strong>Reales</strong> para cargar datos.
+            {mesesConDatos.length > 0 && (
+              <span className="d-block mt-2">
+                💡 Meses con datos disponibles: {mesesConDatos.map(m => 
+                  formatearMes(m, { month: 'short', year: 'numeric' })
+                ).join(', ')}
+              </span>
+            )}
+          </p>
+        </div>
+      )}
 
       {/* TAB: RESUMEN */}
       {tabActiva === 'resumen' && (
@@ -1207,10 +1263,7 @@ const Reportes = ({ estimados, reales }) => {
                         {evolucionCapital.map((evol, idx) => (
                           <tr key={idx}>
                             <td className="fw-semibold">
-                              {new Date(evol.mes + '-01').toLocaleDateString('es-AR', { 
-                                month: 'long', 
-                                year: 'numeric' 
-                              })}
+                              {formatearMes(evol.mes)}
                             </td>
                             <td className="text-end">{formatoMoneda(evol.inversionMes)}</td>
                             <td className={`text-end ${evol.gananciaMes >= 0 ? 'text-success' : 'text-danger'}`}>
@@ -1379,10 +1432,7 @@ const Reportes = ({ estimados, reales }) => {
                         {historico.map((h, idx) => (
                           <tr key={idx}>
                             <td className="fw-semibold">
-                              {new Date(h.mes + '-01').toLocaleDateString('es-AR', { 
-                                month: 'long', 
-                                year: 'numeric' 
-                              })}
+                              {formatearMes(h.mes)}
                             </td>
                             <td className="text-end">
                               {formatoMoneda(h.ingresoReal)}

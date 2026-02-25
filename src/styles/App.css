@@ -664,5 +664,114 @@ body {
   border-left: 4px solid #f59e0b;
 }
 
+/* ========== MEJORAS RESPONSIVIDAD MÓVIL ========== */
 
+/* Optimizaciones para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+  /* Component card con menos padding en móvil */
+  .component-card {
+    padding: 1rem;
+  }
 
+  /* Inputs más legibles en móvil */
+  .form-control,
+  .form-select {
+    font-size: 16px; /* Previene zoom en iOS */
+    min-height: 44px; /* Touch target mínimo recomendado */
+  }
+
+  /* Input groups con mejor tamaño */
+  .input-group .form-control {
+    font-size: 16px;
+  }
+
+  .input-group-text {
+    min-width: 40px;
+    justify-content: center;
+  }
+
+  /* Botones con mejor touch target */
+  .btn {
+    min-height: 44px;
+    font-size: 0.9rem;
+  }
+
+  .btn-sm {
+    min-height: 38px;
+    font-size: 0.85rem;
+  }
+
+  /* Labels más compactos */
+  .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+  }
+
+  /* Headers más compactos */
+  h5 {
+    font-size: 1.15rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+
+  /* Cards de conceptos más compactos */
+  .border.rounded {
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Dividers menos prominentes */
+  .divider {
+    margin: 0.75rem 0;
+  }
+
+  /* Textos más pequeños en espacios reducidos */
+  small {
+    font-size: 0.8rem;
+  }
+
+  /* Mejor spacing en rows */
+  .row.g-2 {
+    row-gap: 0.75rem !important;
+  }
+
+  /* Nav pills más compactas en móvil */
+  .nav-pills-container {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .nav-pill {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Tablas responsivas con scroll horizontal */
+  .table-responsive {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  /* Mensajes informativos más compactos */
+  .alert {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Optimizaciones para pantallas muy pequeñas (<375px) */
+@media (max-width: 374px) {
+  .component-card {
+    padding: 0.75rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  small {
+    font-size: 0.75rem;
+  }
+}

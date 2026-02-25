@@ -295,16 +295,29 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
                   const montoSimple = modoSimple ? concepto.gastos[0]?.monto || '' : '';
 
                   return (
-                    <div key={concepto.nombre} className="border rounded p-3">
-                      {/* Fila principal: Concepto + Input/Total + Botón */}
-                      <div className="d-flex align-items-center gap-2 mb-2">
-                        <div className="fw-semibold" style={{ minWidth: '180px' }}>
+                    <div key={concepto.nombre} className="border rounded p-2 p-md-3 mb-3">
+                      {/* Header con nombre del concepto */}
+                      <div className="d-flex align-items-center justify-content-between mb-2">
+                        <div className="fw-semibold small">
                           🏷️ {concepto.nombre}
                         </div>
-                        
-                        {/* Input simple (solo si NO tiene items detallados) */}
-                        {!modoDetallado && (
-                          <div className="input-group" style={{ maxWidth: '250px' }}>
+                        {/* Botón Ver detalle (solo en móvil, arriba) */}
+                        <button
+                          className={`btn btn-sm d-md-none ${expandido ? 'btn-outline-secondary' : 'btn-outline-primary'}`}
+                          onClick={() => toggleExpandir(concepto.nombre)}
+                          disabled={modoSimple || guardando}
+                          type="button"
+                          title={modoSimple ? 'Borrá el monto simple para agregar items detallados' : ''}
+                          style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}
+                        >
+                          {expandido ? '▲' : '📋'}
+                        </button>
+                      </div>
+                      
+                      {/* Input simple (solo si NO tiene items detallados) */}
+                      {!modoDetallado && (
+                        <div className="mb-2">
+                          <div className="input-group">
                             <span className="input-group-text">$</span>
                             <input
                               type="number"
@@ -315,47 +328,52 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
                               disabled={guardando}
                             />
                           </div>
-                        )}
-
-                        {/* Mostrar total si está en modo detallado */}
-                        {modoDetallado && (
-                          <div className="fw-bold">
-                            Total: ${totalGastado.toLocaleString('es-AR')}
-                          </div>
-                        )}
-
-                        <div className="ms-auto d-flex align-items-center gap-2">
-                          {/* Comparación con estimado */}
-                          {totalGastado > 0 && (
-                            <small className={dentroPresupuesto ? 'text-success' : 'text-danger'}>
-                              Estimado: ${totalEstimado.toLocaleString('es-AR')}
-                              {!dentroPresupuesto && ` (⚠️ +${(totalGastado - totalEstimado).toLocaleString('es-AR')})`}
-                            </small>
-                          )}
-
-                          {/* Botón Ver detalle / Ocultar */}
-                          <button
-                            className={`btn btn-sm ${expandido ? 'btn-outline-secondary' : 'btn-outline-primary'}`}
-                            onClick={() => toggleExpandir(concepto.nombre)}
-                            disabled={modoSimple || guardando}
-                            type="button"
-                            title={modoSimple ? 'Borrá el monto simple para agregar items detallados' : ''}
-                          >
-                            {expandido ? '▲ Ocultar' : '📋 Ver detalle'}
-                          </button>
                         </div>
+                      )}
+
+                      {/* Mostrar total si está en modo detallado */}
+                      {modoDetallado && (
+                        <div className="fw-bold mb-2">
+                          Total: ${totalGastado.toLocaleString('es-AR')}
+                        </div>
+                      )}
+
+                      {/* Comparación con estimado + botón desktop */}
+                      <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
+                        {/* Comparación con estimado */}
+                        {totalGastado > 0 && (
+                          <small className={`${dentroPresupuesto ? 'text-success' : 'text-danger'}`}>
+                            <strong>Estimado:</strong> ${totalEstimado.toLocaleString('es-AR')}
+                            {!dentroPresupuesto && (
+                              <span className="d-block d-md-inline ms-md-1">
+                                ⚠️ Excedido: +${(totalGastado - totalEstimado).toLocaleString('es-AR')}
+                              </span>
+                            )}
+                          </small>
+                        )}
+
+                        {/* Botón Ver detalle (solo en desktop) */}
+                        <button
+                          className={`btn btn-sm d-none d-md-block flex-shrink-0 ${expandido ? 'btn-outline-secondary' : 'btn-outline-primary'}`}
+                          onClick={() => toggleExpandir(concepto.nombre)}
+                          disabled={modoSimple || guardando}
+                          type="button"
+                          title={modoSimple ? 'Borrá el monto simple para agregar items detallados' : ''}
+                        >
+                          {expandido ? '▲ Ocultar' : '📋 Ver detalle'}
+                        </button>
                       </div>
 
                       {/* Mensaje informativo si tiene monto simple */}
                       {modoSimple && !expandido && (
-                        <small className="text-muted d-block">
+                        <small className="text-muted d-block mt-1">
                           Monto único ingresado. Borrá el monto para agregar items detallados.
                         </small>
                       )}
 
                       {/* Mensaje informativo si NO tiene nada */}
                       {!modoSimple && !modoDetallado && !expandido && (
-                        <small className="text-muted d-block">
+                        <small className="text-muted d-block mt-1">
                           Ingresá un monto único o hacé clic en "📋 Ver detalle" para agregar items específicos.
                         </small>
                       )}
@@ -370,10 +388,10 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
                             </div>
                           ) : (
                             <>
-                              <div className="d-flex justify-content-between align-items-center mb-2">
+                              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                                 <small className="text-muted">Items detallados:</small>
                                 <button
-                                  className="btn btn-sm btn-primary"
+                                  className="btn btn-sm btn-primary w-100 w-sm-auto"
                                   onClick={() => agregarGasto(concepto.nombre)}
                                   disabled={guardando}
                                   type="button"
@@ -382,58 +400,48 @@ const Reales = ({ estimados, reales, setReales, user, onGuardar }) => {
                                 </button>
                               </div>
 
-                              {/* Tabla de items detallados */}
+                              {/* Items detallados - Layout móvil/desktop */}
                               {concepto.gastos && concepto.gastos.length > 0 ? (
-                                <div className="table-responsive">
-                                  <table className="table table-sm table-hover align-middle mb-0">
-                                    <thead>
-                                      <tr>
-                                        <th>Detalle del gasto</th>
-                                        <th style={{ width: '180px' }}>Monto</th>
-                                        <th style={{ width: '50px' }}></th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {concepto.gastos.map((gasto, gastoIdx) => (
-                                        <tr key={gastoIdx}>
-                                          <td>
-                                            <input
-                                              type="text"
-                                              className="form-control form-control-sm"
-                                              placeholder="Ej: Salidas a comer"
-                                              value={gasto.detalle}
-                                              onChange={e => actualizarDetalleGasto(concepto.nombre, gastoIdx, e.target.value)}
-                                              disabled={guardando}
-                                            />
-                                          </td>
-                                          <td>
-                                            <div className="input-group input-group-sm">
-                                              <span className="input-group-text">$</span>
-                                              <input
-                                                type="number"
-                                                className="form-control"
-                                                placeholder="0"
-                                                value={gasto.monto}
-                                                onChange={e => actualizarMontoGasto(concepto.nombre, gastoIdx, e.target.value)}
-                                                disabled={guardando}
-                                              />
-                                            </div>
-                                          </td>
-                                          <td>
-                                            <button
-                                              className="btn btn-sm btn-outline-danger"
-                                              onClick={() => eliminarGasto(concepto.nombre, gastoIdx)}
-                                              disabled={guardando}
-                                              type="button"
-                                            >
-                                              🗑️
-                                            </button>
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
+                                <div className="d-flex flex-column gap-2">
+                                  {concepto.gastos.map((gasto, gastoIdx) => (
+                                    <div key={gastoIdx} className="border rounded p-2 bg-light">
+                                      {/* Input de detalle */}
+                                      <input
+                                        type="text"
+                                        className="form-control form-control-sm mb-2"
+                                        placeholder="Ej: Salidas a comer"
+                                        value={gasto.detalle}
+                                        onChange={e => actualizarDetalleGasto(concepto.nombre, gastoIdx, e.target.value)}
+                                        disabled={guardando}
+                                      />
+                                      
+                                      {/* Input de monto + botón eliminar */}
+                                      <div className="d-flex gap-2">
+                                        <div className="input-group input-group-sm flex-grow-1">
+                                          <span className="input-group-text">$</span>
+                                          <input
+                                            type="number"
+                                            className="form-control"
+                                            placeholder="0"
+                                            value={gasto.monto}
+                                            onChange={e => actualizarMontoGasto(concepto.nombre, gastoIdx, e.target.value)}
+                                            disabled={guardando}
+                                          />
+                                        </div>
+                                        <button
+                                          className="btn btn-sm btn-outline-danger"
+                                          onClick={() => eliminarGasto(concepto.nombre, gastoIdx)}
+                                          disabled={guardando}
+                                          type="button"
+                                          title="Eliminar item"
+                                        >
+                                          🗑️
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
+
                               ) : (
                                 <div className="text-muted text-center py-2 small border rounded">
                                   Sin items. Hacé clic en "➕ Agregar item" para comenzar
