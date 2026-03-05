@@ -185,6 +185,8 @@ function App() {
         <Estimados 
           estimados={estimados} 
           setEstimados={setEstimados}
+          reales={reales}
+          setReales={setReales}
           user={user}
           onGuardar={guardarTodosDatos}
         />

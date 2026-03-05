@@ -1,7 +1,7 @@
 // Componente para cargar estimados mensuales con conceptos por mes
 import React, { useState, useEffect } from 'react';
 
-const Estimados = ({ estimados, setEstimados, user, onGuardar }) => {
+const Estimados = ({ estimados, setEstimados, reales, setReales, user, onGuardar }) => {
   const [mes, setMes] = useState('');
   const [ingreso, setIngreso] = useState('');
   const [inversion, setInversion] = useState('');
@@ -101,6 +101,41 @@ const Estimados = ({ estimados, setEstimados, user, onGuardar }) => {
       };
       
       setEstimados(nuevosEstimados);
+      
+      // Sincronizar conceptos nuevos con reales si ya existen datos reales para este mes
+      if (reales[mes]) {
+        const conceptosRealesActuales = reales[mes].conceptos || [];
+        const nombresRealesExistentes = conceptosRealesActuales.map(c => c.nombre);
+        
+        // Agregar solo conceptos nuevos que no existen en reales
+        const conceptosNuevos = conceptos
+          .filter(c => !nombresRealesExistentes.includes(c.nombre))
+          .map(c => ({ nombre: c.nombre, gastos: [] }));
+        
+        if (conceptosNuevos.length > 0) {
+          const nuevosReales = {
+            ...reales,
+            [mes]: {
+              ...reales[mes],
+              conceptos: [...conceptosRealesActuales, ...conceptosNuevos]
+            }
+          };
+          setReales(nuevosReales);
+          
+          // Mostrar mensaje informativo
+          const mensaje = conceptosNuevos.length === 1 
+            ? `✅ Se agregó el concepto "${conceptosNuevos[0].nombre}" a los datos reales del mes`
+            : `✅ Se agregaron ${conceptosNuevos.length} conceptos nuevos a los datos reales del mes`;
+          
+          const toast = document.createElement('div');
+          toast.className = 'alert alert-info position-fixed top-0 start-50 translate-middle-x mt-3 shadow-lg';
+          toast.style.zIndex = '9999';
+          toast.innerHTML = `<strong>${mensaje}</strong>`;
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 4000);
+        }
+      }
+      
       await onGuardar();
       
       // RESETEAR TODO después de guardar

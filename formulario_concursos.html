@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>CARGA WEB - Concursos (Maqueta)</title>
+  <style>
+    :root{
+      --teal:#0a8f7a;
+      --line:#d7dbe0;
+      --muted:#6e7b86;
+      --bg:#f4f6f8;
+      --ok:#2e6f63;
+      --warnbg:#f2dede;
+      --warnbd:#ebc0c0;
+      --warnfg:#8a2d2d;
+      --shadow:0 12px 40px rgba(0,0,0,.25);
+    }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family: Arial, Helvetica, sans-serif; background:var(--bg); color:#222; }
+
+    /* Header */
+    .top{ background:#fff; border-bottom:1px solid var(--line); }
+    .top-inner{
+      max-width:1200px; margin:0 auto; padding:12px 16px;
+      display:flex; justify-content:space-between; gap:16px;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .brand-badge{
+      width:44px;height:44px;border-radius:50%;
+      border:1px solid var(--line);
+      background:linear-gradient(#fff,#f1f3f5);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:bold;color:#2b7c74;
+    }
+    .top-right{ text-align:right; font-size:12px; color:var(--muted); line-height:1.6; white-space:nowrap; }
+    .top-right b{ color:#2b5c90; }
+    .top-right a{ color:#2b5c90; text-decoration:none; }
+    .top-right a:hover{ text-decoration:underline; }
+
+    .nav{ background:var(--teal); color:#fff; }
+    .nav-inner{
+      max-width:1200px; margin:0 auto; padding:10px 16px;
+      display:flex; gap:18px; align-items:center; font-size:13px; font-weight:bold;
+    }
+    .nav a{ color:#fff; text-decoration:none; opacity:.95; }
+    .nav a:hover{ opacity:1; text-decoration:underline; }
+
+    /* Page */
+    .page{ max-width:1200px; margin:0 auto; padding:14px 16px 26px; }
+    .crumb{ font-size:12px; color:#4a4f55; margin:8px 0 10px; }
+    .crumb b{ color:#222; }
+    h2{ margin:8px 0 6px; font-size:22px; font-weight:normal; text-align:center; }
+    .desc{ text-align:center; color:#6b7178; max-width:900px; margin:0 auto 12px; font-size:12.5px; line-height:1.5; }
+
+    .tabs, .subtabs{ display:flex; justify-content:center; gap:10px; }
+    .tabs{ margin:14px 0 10px; }
+    .subtabs{ margin:0 0 10px; }
+    .tab, .subtab{
+      background:#f5f7f9; border:1px solid var(--line);
+      padding:10px 16px; border-bottom:none; border-radius:4px 4px 0 0;
+      color:#4a4f55; font-size:13px; cursor:pointer;
+    }
+    .tab.active, .subtab.active{
+      background:#fff; color:#2b6c64; position:relative; top:1px;
+    }
+
+    .panel{ background:#fff; border:1px solid var(--line); padding:14px; }
+
+    .searchrow{
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      flex-wrap:wrap; margin-bottom:10px;
+    }
+    .pill{
+      background:var(--ok); color:#fff; padding:8px 12px; border-radius:18px;
+      font-size:12px; font-weight:bold; display:inline-flex; align-items:center; gap:8px;
+    }
+    .pill .count{ background:#1c5d52; padding:3px 8px; border-radius:10px; font-weight:bold; font-size:12px; }
+    .searchbox{ display:flex; gap:6px; align-items:center; }
+    .searchbox input{ height:30px; border:1px solid var(--line); padding:0 10px; width:230px; border-radius:3px; }
+
+    .btn{
+      height:30px; border:1px solid var(--line); background:#fff; padding:0 12px;
+      border-radius:3px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    }
+    .btn:hover{ background:#f6f8fa; }
+    .btn-primary{
+      background:var(--ok);
+      border-color:var(--ok);
+      color:#fff;
+      font-weight:bold;
+    }
+    .btn-primary:hover{ background:#285f55; }
+    .btn-pill{ border-radius:18px; height:auto; padding:8px 12px; }
+
+    table{ width:100%; border-collapse:collapse; font-size:12px; }
+    thead th{
+      background:#fff; color:#5a6067; font-weight:bold;
+      padding:10px 8px; border-bottom:1px solid var(--line); text-align:left;
+      vertical-align:bottom;
+    }
+    tbody td{
+      border-top:1px solid #eef1f4; padding:14px 8px; vertical-align:top; color:#3a3f44;
+    }
+    tbody tr:nth-child(even){ background:#fafbfc; }
+
+    .col-num{ width:95px; color:#818991; }
+    .col-actions{ width:270px; text-align:center; }
+    .muted{ color:#8a929a; }
+
+    .badge-red{
+      display:inline-flex; align-items:center; gap:6px; margin-top:10px;
+      background:#d94c4c; color:#fff; padding:7px 12px; border-radius:18px;
+      font-size:12px; width:max-content;
+    }
+
+    .tag-ren{
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:14px;
+      background:#fdecec;
+      border:1px solid #f3c5c5;
+      color:#8b2e2e;
+      font-weight:bold;
+      font-size:12px;
+    }
+
+    /* Modal */
+    .overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.25);
+      display:none; align-items:flex-start; justify-content:center;
+      padding:20px 16px; z-index:1000;
+    }
+    .overlay.show{ display:flex; }
+
+    .modal{
+      width:min(1080px, 96vw);
+      background:#fff;
+      border:4px solid var(--teal);
+      border-radius:4px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .modal-head{
+      background:var(--teal); color:#fff; padding:10px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+      font-weight:bold;
+    }
+    .close{
+      width:18px;height:18px;border-radius:3px;background:#0a8f7a;color:#fff;
+      border:2px solid #fff;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold;
+      line-height:1;
+    }
+    .modal-body{ height:78vh; overflow:auto; padding:14px 18px 18px; background:#fff; }
+
+    .identity{
+      border:1px solid #cfd6dc;
+      border-left:6px solid var(--teal);
+      padding:10px 12px;
+      margin-bottom:12px;
+      background:#fff;
+    }
+    .identity .title{ font-weight:bold; font-size:14px; line-height:1.35; color:#222; }
+    .identity .meta{ margin-top:4px; font-size:12px; color:#4b4f55; }
+    .identity .meta b{ color:#1e6c63; }
+
+    .info-blue{
+      background:#d8edf7;
+      border:1px solid #c2dce8;
+      padding:14px 16px;
+      border-radius:3px;
+      color:#1b5f8c;
+      margin:0 0 14px;
+      font-weight:bold;
+      line-height:1.35;
+    }
+    .bigtext{ margin:0 0 14px; color:#2f3337; line-height:1.5; }
+
+    .formgrid{
+      display:grid; grid-template-columns:220px 1fr; gap:10px 12px;
+      max-width:900px;
+      margin:10px auto 12px;
+    }
+    .label{ text-align:right; color:#4b4f55; padding-top:6px; font-weight:bold; }
+    .value{ padding-top:6px; color:#2b6c64; font-weight:bold; }
+    .input{
+      width:560px; max-width:100%; height:28px; border:1px solid #c6c6c6;
+      padding:0 10px; border-radius:3px;
+      background:#fff;
+    }
+
+    .hint{
+      margin:12px 0 10px;
+      font-weight:bold;
+      color:#6b6f74;
+      text-align:center;
+    }
+
+    .warn-inline{
+      display:none;
+      margin:10px auto 12px;
+      background:var(--warnbg);
+      border:1px solid var(--warnbd);
+      color:var(--warnfg);
+      padding:10px 12px;
+      border-radius:3px;
+      max-width:900px;
+    }
+
+    /* Sedes */
+    .sedes-wrap{
+      border:1px solid #c9c9c9;
+      background:#fff;
+      max-width:900px;
+      margin:0 auto 14px;
+    }
+    .sedes-head{
+      background:#2e9a86;
+      color:#fff;
+      font-weight:bold;
+      padding:8px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .sedes-head .right{ opacity:.95; }
+    .sedes-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    .sedes-table td{
+      border-top:1px solid #efefef;
+      padding:10px;
+      vertical-align:middle;
+    }
+    .sedes-row{
+      cursor:pointer;
+      user-select:none;
+    }
+    .sedes-row:hover{ background:#f4fbf9; }
+    .sedes-row.selected{ background:#eaf6f2; }
+    .sede-name{ font-weight:bold; color:#2b2b2b; }
+    .chk{
+      width:18px; height:18px;
+      border:1px solid #9aa6af;
+      border-radius:3px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:bold;
+      color:#1e6f2a;
+      background:#fff;
+    }
+    .chk.on{ border-color:#2e9a86; }
+    .chk.on::after{ content:"✓"; }
+
+    .modal-foot{
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      padding:14px 0 2px;
+    }
+    .btn-wide{
+      min-width:110px;
+      height:32px;
+      border-radius:3px;
+      border:1px solid #8a959f;
+      background:#f6f7f8;
+      cursor:pointer;
+    }
+    .btn-wide.primary{
+      background:#0b7f6d;
+      border-color:#0b7f6d;
+      color:#fff;
+      font-weight:bold;
+    }
+    .btn-wide.primary:hover{ filter:brightness(.96); }
+    .btn-wide.danger{
+      background:#d06a6a;
+      border-color:#b85656;
+      color:#fff;
+      font-weight:bold;
+    }
+
+    /* System popups */
+    .sys-overlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.25);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1300;
+      padding:16px;
+    }
+    .sys-overlay.show{ display:flex; }
+    .sys-popup{
+      width:min(820px, 96vw);
+      background:#fff;
+      border:1px solid #c8c8c8;
+      border-radius:3px;
+      box-shadow:0 10px 28px rgba(0,0,0,.22);
+      overflow:hidden;
+    }
+    .sys-head{
+      height:20px;
+      background:var(--teal);
+      position:relative;
+    }
+    .sys-head .x{
+      position:absolute; right:6px; top:2px;
+      width:16px;height:16px;
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-weight:bold; cursor:pointer;
+      border-radius:2px;
+    }
+    .sys-body{
+      padding:16px 18px 10px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+    .sys-icon{
+      width:44px;height:44px;border-radius:50%;
+      border:2px solid #8fbe9b;
+      background:radial-gradient(circle at 30% 30%, #ffffff 0%, #eaf6ee 55%, #d8eedf 100%);
+      display:flex; align-items:center; justify-content:center;
+      color:#2f7a44;
+      font-size:22px;
+      font-weight:bold;
+      flex:0 0 44px;
+    }
+    .sys-text{
+      font-size:14px;
+      color:#2b2b2b;
+      line-height:1.35;
+      white-space:pre-line;
+      width:100%;
+    }
+    .sys-actions{
+      padding:0 18px 16px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+    }
+    .sys-btn{
+      min-width:96px;
+      height:30px;
+      border-radius:16px;
+      border:1px solid #9ab8b1;
+      cursor:pointer;
+      background:#e7f3f0;
+      font-weight:bold;
+    }
+    .sys-btn.primary{
+      background:#0b7f6d;
+      border-color:#0b7f6d;
+      color:#fff;
+    }
+
+    .toast{ width:min(520px, 96vw); }
+    .toast .sys-body{ align-items:center; padding:14px 18px; }
+    .toast .sys-icon{ display:none; }
+    .toast .sys-text{ font-size:13px; }
+
+    .ren-note{
+      display:none;
+      margin:6px 0 10px;
+      color:#c53636;
+      font-size:12px;
+      font-weight:bold;
+      text-align:center;
+    }
+
+    /* resumen en confirm */
+    .sum-box{
+      margin-top:10px;
+      border:1px solid #d7dbe0;
+      background:#f7fbff;
+      padding:10px 12px;
+      border-radius:3px;
+      font-size:13px;
+    }
+    .sum-row{ margin:4px 0; }
+    .sum-row b{ color:#1e6c63; }
+    .sum-sedes{
+      margin:6px 0 0 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top">
+    <div class="top-inner">
+      <div class="brand">
+        <div class="brand-badge">PJ</div>
+      </div>
+      <div class="top-right">
+        <div><b>GIORDAN812</b> - GIORDANO, José Luis</div>
+        <div><b>SUB AREA DE INVESTIGACION, DESARROLLO E INNOVACION TECNOLOGICA</b></div>
+        <div>19/02/2026</div>
+        <div><a href="javascript:void(0)">Inicio</a> &nbsp; | &nbsp; <a href="javascript:void(0)">Contáctenos</a></div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-inner">
+        <a href="javascript:void(0)">Inicio</a>
+        <a href="javascript:void(0)">Administración</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="crumb">Ud. está en :: <b>ConcursosAlta</b></div>
+
+    <h2>Concursos</h2>
+    <div class="desc">
+      En esta sección, se anuncian convocatorias a concursos de ingreso al Poder Judicial y convocatorias jerárquicas internas.
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Abiertos al Público General</div>
+      <div class="tab">Internos para Personal Judicial</div>
+    </div>
+
+    <div class="subtabs">
+      <div class="subtab active">Concursos en Trámite</div>
+      <div class="subtab">Concursos en Etapa de Designación</div>
+      <div class="subtab">Concursos Finalizados</div>
+    </div>
+
+    <div class="panel">
+      <div class="searchrow">
+        <div class="pill">Total de concursos en Tramite Internos <span class="count">41</span></div>
+
+        <div class="searchbox">
+          <input type="text" placeholder="Buscar concursos" />
+          <button class="btn"><span style="font-weight:bold">Q</span> Buscar</button>
+        </div>
+
+        <button class="btn btn-primary btn-pill" title="Asistente virtual (maqueta)">ASISTENTE VIRTUAL</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th class="col-num">#</th>
+            <th>Concurso</th>
+            <th class="col-actions">Material Disponible</th>
+            <th class="col-actions">Correo</th>
+            <th class="col-actions">Quiero</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyConcursos"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlayInscripcion">
+    <div class="modal">
+      <div class="modal-head">
+        <div id="modalHeadTitle">Gestionar inscripción</div>
+        <div class="close" id="closeInscripcion">×</div>
+      </div>
+
+      <div class="modal-body">
+        <div class="identity">
+          <div class="title" id="idTitle">—</div>
+          <div class="meta">
+            Concurso <b id="idNum">—</b> del año <b id="idAnio">—</b> · Tipo: <b>Jerárquico</b>
+          </div>
+        </div>
+
+        <div class="info-blue">
+          Solicitud de Inscripción para “<span id="modalTitulo">—</span>”. “<span id="modalAnio">—</span>”.
+        </div>
+
+        <div class="bigtext">
+          La dirección de email que Ud. ingrese será la que el Poder Judicial de Córdoba utilizará para confirmar el pedido de inscripción y posteriores notificaciones.
+          <br><br>
+          Esta solicitud de inscripción es válida solo para empleados del Poder Judicial de la Provincia de Córdoba.
+        </div>
+
+        <div class="formgrid">
+          <div class="label">Sr./Sra.:</div>
+          <div class="value" id="modalNombre">JOSÉ LUIS GIORDANO</div>
+
+          <div class="label">Legajo N°:</div>
+          <div class="value" id="modalLegajo">812</div>
+
+          <div class="label">Dirección de email:</div>
+          <div><input class="input" id="email1" type="text" value=""/></div>
+
+          <div class="label">Confirmar dirección de email:</div>
+          <div><input class="input" id="email2" type="text" value=""/></div>
+        </div>
+
+        <div class="ren-note" id="renNote">Si renuncia no podrá volver a inscribirse</div>
+
+        <div class="hint">
+          Seleccione las Sedes para inscribirse ó seleccione nuevamente para desinscribirse y luego grabar.
+        </div>
+
+        <div class="warn-inline" id="warnBox">
+          Ud. no está inscripto en ninguna Sede. Debería seleccionar al menos una Sede.
+        </div>
+
+        <div class="sedes-wrap">
+          <div class="sedes-head">
+            <div>Sedes disponibles (click para seleccionar)</div>
+            <div class="right" id="sedesCount">0 sedes</div>
+          </div>
+          <table class="sedes-table">
+            <tbody id="sedesBody"></tbody>
+          </table>
+        </div>
+
+        <div class="modal-foot">
+          <button class="btn-wide" id="btnCancelarIns">Cancelar</button>
+          <button class="btn-wide primary" id="btnGrabarIns">Grabar</button>
+          <button class="btn-wide danger" id="btnRenunciarSolo" style="display:none;">Renunciar al concurso</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm -->
+  <div class="sys-overlay" id="sysConfirm">
+    <div class="sys-popup">
+      <div class="sys-head">
+        <div class="x" id="sysConfirmX">×</div>
+      </div>
+      <div class="sys-body">
+        <div class="sys-icon">!</div>
+        <div class="sys-text" id="sysConfirmText">¿Está seguro?</div>
+      </div>
+      <div class="sys-actions">
+        <button class="sys-btn primary" id="sysConfirmOk">Aceptar</button>
+        <button class="sys-btn" id="sysConfirmCancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="sys-overlay" id="sysInfo">
+    <div class="sys-popup">
+      <div class="sys-head">
+        <div class="x" id="sysInfoX">×</div>
+      </div>
+      <div class="sys-body">
+        <div class="sys-icon">✓</div>
+        <div class="sys-text" id="sysInfoText">—</div>
+      </div>
+      <div class="sys-actions">
+        <button class="sys-btn primary" id="sysInfoOk">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fuera de término -->
+  <div class="sys-overlay" id="sysToast">
+    <div class="sys-popup toast">
+      <div class="sys-head">
+        <div class="x" id="sysToastX">×</div>
+      </div>
+      <div class="sys-body">
+        <div class="sys-text">• La inscripción a este concurso está fuera de término.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sedes acotadas
+    const ALL_SEDES = [
+      "CAPITAL (CÓRDOBA)",
+      "RÍO CUARTO",
+      "SAN FRANCISCO",
+      "VILLA MARÍA",
+      "ALTA GRACIA",
+      "BELL VILLE",
+      "JESÚS MARÍA",
+      "RÍO TERCERO",
+      "RÍO SEGUNDO",
+      "VILLA CARLOS PAZ"
+    ];
+
+    let concursos = [
+      {
+        id:"cOpen",
+        num:330, anio:2025,
+        titulo:"Secretario de cámara para las cámaras del fuero laboral de los centros judiciales de Capital, Río Cuarto, San Francisco y Villa María.",
+        inscripcionAbierta:true,
+        estadoInscripcion:"NO",
+        email:"",
+        sedesSel:[]
+      },
+      {
+        id:"cClosed",
+        num:331, anio:2025,
+        titulo:"Secretario de primera instancia para las dependencias del fuero laboral de los centros judiciales de Capital, Río Cuarto, San Francisco y Villa María y para las oficinas únicas de conciliación creadas (Alta Gracia, Bell Ville, Jesús María, Río Tercero, Río Segundo y Carlos Paz) o que pudieran crearse.",
+        inscripcionAbierta:false,
+        estadoInscripcion:"INSCRIPTO",
+        email:"usuario@justiciacordoba.gob.ar",
+        sedesSel:["CAPITAL (CÓRDOBA)","RÍO CUARTO","VILLA MARÍA"]
+      }
+    ];
+
+    const tbody = document.getElementById('tbodyConcursos');
+
+    function escapeHtml(str){
+      return (str || "").replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
+    }
+
+    function shortTitle(s, max=120){
+      s = (s || "").trim();
+      if(s.length <= max) return s;
+      return s.slice(0, max-1).trim() + "…";
+    }
+
+    function renderList(){
+      tbody.innerHTML = "";
+      concursos.forEach(c=>{
+        const tr = document.createElement('tr');
+
+        let quieroHtml = "";
+        if(c.estadoInscripcion === "RENUNCIADO"){
+          quieroHtml = `<span class="tag-ren">CONCURSO RENUNCIADO</span>`;
+        } else {
+          const label = c.inscripcionAbierta ? "Inscribirme / Renunciar" : "Renunciar";
+          quieroHtml = `<button class="btn btn-primary btn-pill" data-id="${c.id}">${label}</button>`;
+        }
+
+        tr.innerHTML = `
+          <td class="col-num">
+            <div class="muted">${c.num}</div>
+            <div class="muted">del Año</div>
+            <div class="muted">${c.anio}</div>
+          </td>
+          <td>
+            <div class="muted" style="font-weight:bold">${escapeHtml(c.titulo)}</div>
+            <div class="badge-red">Novedades ▶</div>
+          </td>
+          <td class="col-actions"><button class="btn btn-pill" style="border-color:#cfe4de">Archivos</button></td>
+          <td class="col-actions"><button class="btn btn-pill" style="border-color:#cfe4de">Correo</button></td>
+          <td class="col-actions">${quieroHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('button[data-id]').forEach(b=>{
+        b.addEventListener('click', ()=> openModal(b.getAttribute('data-id')));
+      });
+    }
+
+    // ===== Modal =====
+    const overlayIns = document.getElementById('overlayInscripcion');
+    const closeIns = document.getElementById('closeInscripcion');
+    const btnCancelarIns = document.getElementById('btnCancelarIns');
+    const btnGrabarIns = document.getElementById('btnGrabarIns');
+    const btnRenunciarSolo = document.getElementById('btnRenunciarSolo');
+
+    const idTitle = document.getElementById('idTitle');
+    const idNum = document.getElementById('idNum');
+    const idAnio = document.getElementById('idAnio');
+
+    const modalTitulo = document.getElementById('modalTitulo');
+    const modalAnio = document.getElementById('modalAnio');
+
+    const email1 = document.getElementById('email1');
+    const email2 = document.getElementById('email2');
+
+    const warnBox = document.getElementById('warnBox');
+    const sedesBody = document.getElementById('sedesBody');
+    const sedesCount = document.getElementById('sedesCount');
+    const renNote = document.getElementById('renNote');
+
+    let currentId = null;
+    let draftSelected = new Set();
+    let readOnlySedes = false;
+
+    function openModal(id){
+      currentId = id;
+      const c = concursos.find(x=>x.id===id);
+
+      idTitle.textContent = c.titulo;
+      idNum.textContent = c.num;
+      idAnio.textContent = c.anio;
+
+      modalTitulo.textContent = c.titulo;
+      modalAnio.textContent = c.anio;
+
+      email1.value = c.email || "";
+      email2.value = c.email || "";
+
+      draftSelected = new Set((c.sedesSel || []).slice());
+
+      warnBox.style.display = "none";
+      renNote.style.display = "none";
+
+      // Importante: armamos la pantalla FINAL primero (para que no “parpadee” con datos de otro concurso)
+      if(!c.inscripcionAbierta){
+        readOnlySedes = true;
+        btnGrabarIns.style.display = "none";
+        btnRenunciarSolo.style.display = "inline-block";
+        renNote.style.display = "block";
+        renderSedes();               // render inmediato de la vista final
+        overlayIns.classList.add('show');
+        showToastFueraTermino();     // toast arriba
+      } else {
+        readOnlySedes = false;
+        btnRenunciarSolo.style.display = "none";
+        btnGrabarIns.style.display = "inline-block";
+        renderSedes();
+        overlayIns.classList.add('show');
+      }
+    }
+
+    function closeModal(){
+      overlayIns.classList.remove('show');
+      currentId = null;
+      draftSelected = new Set();
+      readOnlySedes = false;
+      // limpiamos por las dudas
+      sedesBody.innerHTML = "";
+      sedesCount.textContent = "0 sedes";
+      warnBox.style.display = "none";
+    }
+
+    closeIns.addEventListener('click', closeModal);
+    btnCancelarIns.addEventListener('click', closeModal);
+    overlayIns.addEventListener('click', (e)=>{ if(e.target === overlayIns) closeModal(); });
+
+    function renderSedes(){
+      sedesBody.innerHTML = "";
+
+      const list = readOnlySedes
+        ? Array.from(draftSelected)
+        : ALL_SEDES.slice();
+
+      sedesCount.textContent = `${list.length} sedes`;
+
+      list.forEach(sede=>{
+        const selected = draftSelected.has(sede);
+        const tr = document.createElement('tr');
+        tr.className = `sedes-row ${selected ? "selected":""}`;
+        tr.innerHTML = `
+          <td class="sede-name">${escapeHtml(sede)}</td>
+          <td style="width:60px; text-align:right;">
+            <span class="chk ${selected ? "on":""}"></span>
+          </td>
+        `;
+
+        tr.addEventListener('click', ()=>{
+          if(readOnlySedes) return;
+
+          if(draftSelected.has(sede)) draftSelected.delete(sede);
+          else draftSelected.add(sede);
+
+          renderSedes();
+          warnBox.style.display = (draftSelected.size === 0) ? "block" : "none";
+        });
+
+        sedesBody.appendChild(tr);
+      });
+
+      if(!readOnlySedes){
+        warnBox.style.display = (draftSelected.size === 0) ? "block" : "none";
+      } else {
+        warnBox.style.display = "none";
+      }
+    }
+
+    // ===== Popups =====
+    const sysConfirm = document.getElementById('sysConfirm');
+    const sysConfirmText = document.getElementById('sysConfirmText');
+    const sysConfirmX = document.getElementById('sysConfirmX');
+    const sysConfirmOk = document.getElementById('sysConfirmOk');
+    const sysConfirmCancel = document.getElementById('sysConfirmCancel');
+
+    const sysInfo = document.getElementById('sysInfo');
+    const sysInfoText = document.getElementById('sysInfoText');
+    const sysInfoX = document.getElementById('sysInfoX');
+    const sysInfoOk = document.getElementById('sysInfoOk');
+
+    const sysToast = document.getElementById('sysToast');
+    const sysToastX = document.getElementById('sysToastX');
+
+    let confirmCb = null;
+
+    function showConfirmHtml(html, onOk){
+      sysConfirmText.innerHTML = html;
+      confirmCb = onOk || null;
+      sysConfirm.classList.add('show');
+    }
+    function hideConfirm(){
+      sysConfirm.classList.remove('show');
+      confirmCb = null;
+      sysConfirmText.textContent = "";
+    }
+    sysConfirmX.addEventListener('click', hideConfirm);
+    sysConfirmCancel.addEventListener('click', hideConfirm);
+    sysConfirm.addEventListener('click', (e)=>{ if(e.target === sysConfirm) hideConfirm(); });
+    sysConfirmOk.addEventListener('click', ()=>{
+      const cb = confirmCb;
+      hideConfirm();
+      if(cb) cb();
+    });
+
+    function showInfo(text, onClose){
+      sysInfoText.textContent = text;
+      sysInfo.classList.add('show');
+      const close = ()=>{
+        sysInfo.classList.remove('show');
+        if(onClose) onClose();
+      };
+      sysInfoOk.onclick = close;
+      sysInfoX.onclick = close;
+      sysInfo.onclick = (e)=>{ if(e.target === sysInfo) close(); };
+    }
+
+    function showToastFueraTermino(){
+      sysToast.classList.add('show');
+    }
+    function hideToastFueraTermino(){
+      sysToast.classList.remove('show');
+    }
+    sysToastX.addEventListener('click', hideToastFueraTermino);
+    sysToast.addEventListener('click', (e)=>{ if(e.target === sysToast) hideToastFueraTermino(); });
+
+    // ===== Grabar (con resumen) =====
+    btnGrabarIns.addEventListener('click', ()=>{
+      const c = concursos.find(x=>x.id===currentId);
+      if(!c || !c.inscripcionAbierta) return;
+
+      const em1 = email1.value.trim();
+      const em2 = email2.value.trim();
+
+      if(em1 && em2 && em1 !== em2){
+        showInfo("Las direcciones de email no coinciden.");
+        return;
+      }
+      if(draftSelected.size === 0){
+        warnBox.style.display = "block";
+        return;
+      }
+
+      const sedes = Array.from(draftSelected);
+      const sedesLis = sedes.map(s => `<li>${escapeHtml(s)}</li>`).join("");
+
+      const html = `
+        <div style="font-weight:bold;margin-bottom:6px;">¿Está seguro que desea actualizar sus inscripciones?</div>
+        <div class="sum-box">
+          <div class="sum-row"><b>Concurso:</b> ${escapeHtml(shortTitle(c.titulo, 180))}</div>
+          <div class="sum-row"><b>N°:</b> ${c.num}/${c.anio}</div>
+          <div class="sum-row"><b>Email:</b> ${escapeHtml(em1 || "(sin informar)")}</div>
+          <div class="sum-row"><b>Sedes seleccionadas:</b></div>
+          <ul class="sum-sedes">${sedesLis}</ul>
+        </div>
+      `;
+
+      showConfirmHtml(html, ()=>{
+        c.email = em1;
+        c.estadoInscripcion = "INSCRIPTO";
+        c.sedesSel = sedes;
+
+        showInfo(
+`Los cambios en sus inscripciones se actualizaron correctamente.
+Recibirá por correo los comprobantes de inscripción y desinscripción correspondientes.
+
+Si no recibe el mismo verifique también en la carpeta de Correo no deseado`,
+          ()=>{
+            closeModal();
+            renderList();
+          }
+        );
+      });
+    });
+
+    // ===== Renunciar (cerrado) =====
+    btnRenunciarSolo.addEventListener('click', ()=>{
+      const c = concursos.find(x=>x.id===currentId);
+      if(!c || c.inscripcionAbierta) return;
+
+      const html = `
+        <div style="font-weight:bold;margin-bottom:6px;">
+          ¿Está seguro que desea renunciar al concurso?.
+        </div>
+        <div style="font-weight:bold;color:#7a2222;">
+          RECUERDE QUE SI RENUNCIA NO PODRÁ VOLVER A INSCRIBIRSE
+        </div>
+        <div class="sum-box" style="margin-top:10px;">
+          <div class="sum-row"><b>Concurso:</b> ${escapeHtml(shortTitle(c.titulo, 180))}</div>
+          <div class="sum-row"><b>N°:</b> ${c.num}/${c.anio}</div>
+        </div>
+      `;
+
+      showConfirmHtml(html, ()=>{
+        c.estadoInscripcion = "RENUNCIADO";
+        c.sedesSel = [];
+
+        showInfo(
+`Su renuncia se registró correctamente.
+Se le enviará el comprobante por correo.
+
+Si no recibe el mismo verifique también en la carpeta de Correo no deseado`,
+          ()=>{
+            closeModal();
+            renderList();
+          }
+        );
+      });
+    });
+
+    // init
+    renderList();
+  </script>
+</body>
+</html>
